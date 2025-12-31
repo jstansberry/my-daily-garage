@@ -22,17 +22,17 @@ const GuessHistory = ({ guesses }) => {
                             <Indicator
                                 isCorrect={guess.isMakeCorrect}
                                 label="Make"
-                                delay={isLatest ? 0.5 : 0}
+                                delay={isLatest ? 0.25 : 0}
                             />
                             <Indicator
                                 isCorrect={guess.isModelCorrect}
                                 label="Model"
-                                delay={isLatest ? 1.5 : 0}
+                                delay={isLatest ? 0.75 : 0}
                             />
                             <Indicator
                                 isCorrect={guess.isYearCorrect}
                                 label="Year"
-                                delay={isLatest ? 2.5 : 0}
+                                delay={isLatest ? 1.25 : 0}
                             />
                         </div>
                     </div>
