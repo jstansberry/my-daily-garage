@@ -34,6 +34,9 @@ const GameOverModal = ({ dailyCar, guesses, gameState, onClose }) => {
     return (
         <div style={styles.overlay}>
             <div style={styles.modal} className="glass-panel">
+                <button onClick={onClose} style={styles.xButton}>
+                    X
+                </button>
                 <h2 style={styles.title}>
                     {gameState === 'won' ? 'VICTORY!' : 'GAME OVER'}
                 </h2>
@@ -113,6 +116,8 @@ const styles = {
         alignItems: 'center',
         textAlign: 'center',
         border: '1px solid rgba(255, 255, 255, 0.2)',
+        position: 'relative', // For absolute positioning of X button
+        overflowX: 'hidden', // Prevent horizontal scroll
     },
     title: {
         fontSize: '2rem',
@@ -157,7 +162,7 @@ const styles = {
         backgroundColor: 'rgba(0,0,0,0.2)',
         padding: '15px',
         borderRadius: '8px',
-        marginBottom: '20px',
+        marginBottom: '5px',
         textAlign: 'left',
     },
     previewLine: {
@@ -185,11 +190,29 @@ const styles = {
     closeButton: {
         background: 'transparent',
         border: '1px solid #666',
-        color: '#888',
+        color: '#fff',
         padding: '8px 20px',
         borderRadius: '4px',
         cursor: 'pointer',
-        marginTop: '10px',
+        marginTop: '5px',
+    },
+    xButton: {
+        position: 'absolute',
+        top: '15px',
+        right: '15px',
+        width: '30px',
+        height: '30px',
+        borderRadius: '50%',
+        backgroundColor: 'white',
+        color: 'black',
+        border: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        cursor: 'pointer',
+        fontSize: '16px',
+        zIndex: 10,
     }
 };
 

@@ -1,27 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import carsData from '../data/cars.json';
+import { supabase } from '../lib/supabaseClient';
 
-const GuessForm = ({ onGuess, disabled }) => {
+const GuessForm = ({ onGuess, gameState, onViewResults }) => {
     const [selectedMake, setSelectedMake] = useState('');
     const [selectedModel, setSelectedModel] = useState('');
     const [year, setYear] = useState('');
 
+    const [makes, setMakes] = useState([]);
     const [availableModels, setAvailableModels] = useState([]);
 
-    // Populate models when make changes
+    // Fetch Makes on initial load
     useEffect(() => {
-        if (selectedMake) {
-            const makeData = carsData.makes.find(m => m.make === selectedMake);
-            if (makeData) {
-                setAvailableModels(makeData.models);
+        const fetchMakes = async () => {
+            const { data, error } = await supabase
+                .from('makes')
+                .select('*')
+                .order('name', { ascending: true });
+
+            if (!error && data) {
+                setMakes(data);
+            }
+        };
+        fetchMakes();
+    }, []);
+
+    // Fetch models when make changes
+    useEffect(() => {
+        const fetchModels = async () => {
+            if (selectedMake) {
+                // We need to look up the make ID first, or we can assume we stored the make object in state
+                // Actually, the select value is currently the Make Name (string) based on old code
+                // Let's keep it as Make Name for the onGuess prop compatibility, but we need ID for model lookup
+                const makeObj = makes.find(m => m.name === selectedMake);
+
+                if (makeObj) {
+                    const { data, error } = await supabase
+                        .from('models')
+                        .select('*')
+                        .eq('make_id', makeObj.id)
+                        .order('name', { ascending: true });
+
+                    if (!error && data) {
+                        setAvailableModels(data);
+                    } else {
+                        setAvailableModels([]);
+                    }
+                }
             } else {
                 setAvailableModels([]);
             }
-        } else {
-            setAvailableModels([]);
-        }
-        setSelectedModel(''); // Reset model when make changes
-    }, [selectedMake]);
+            setSelectedModel(''); // Reset model when make changes
+        };
+
+        fetchModels();
+    }, [selectedMake, makes]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -41,26 +73,26 @@ const GuessForm = ({ onGuess, disabled }) => {
                 <select
                     value={selectedMake}
                     onChange={(e) => setSelectedMake(e.target.value)}
-                    disabled={disabled}
+                    disabled={gameState !== 'playing'}
                     style={{ ...styles.input, flex: '0 1 120px' }}
                     required
                 >
                     <option value="">Select Make</option>
-                    {carsData.makes.map(make => (
-                        <option key={make.id} value={make.make}>{make.make}</option>
+                    {makes.map(make => (
+                        <option key={make.id} value={make.name}>{make.name}</option>
                     ))}
                 </select>
 
                 <select
                     value={selectedModel}
                     onChange={(e) => setSelectedModel(e.target.value)}
-                    disabled={!selectedMake || disabled}
+                    disabled={!selectedMake || gameState !== 'playing'}
                     style={{ ...styles.input, flex: 2 }}
                     required
                 >
                     <option value="">Select Model</option>
                     {availableModels.map(model => (
-                        <option key={model.id} value={model.model}>{model.model}</option>
+                        <option key={model.id} value={model.name}>{model.name}</option>
                     ))}
                 </select>
 
@@ -69,7 +101,7 @@ const GuessForm = ({ onGuess, disabled }) => {
                     placeholder="Year"
                     value={year}
                     onChange={(e) => setYear(e.target.value)}
-                    disabled={disabled}
+                    disabled={gameState !== 'playing'}
                     style={{
                         ...styles.input,
                         width: '70px',
@@ -82,8 +114,15 @@ const GuessForm = ({ onGuess, disabled }) => {
                     required
                 />
             </div>
-            <button type="submit" disabled={disabled} style={styles.button}>
-                GUESS
+            <button
+                type={gameState === 'playing' ? "submit" : "button"}
+                onClick={gameState !== 'playing' ? onViewResults : undefined}
+                style={{
+                    ...styles.button,
+                    backgroundColor: gameState === 'playing' ? '#333' : '#e94560'
+                }}
+            >
+                {gameState === 'playing' ? 'GUESS' : 'VIEW RESULTS'}
             </button>
         </form>
     );

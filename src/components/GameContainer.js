@@ -3,41 +3,87 @@ import ImageDisplay from './ImageDisplay';
 import GuessForm from './GuessForm';
 import GuessHistory from './GuessHistory';
 import GameOverModal from './GameOverModal';
-import dailyCars from '../data/dailyCars.json';
+import { supabase } from '../lib/supabaseClient';
 
 const GameContainer = () => {
     // Use US Eastern Time (America/New_York) to determine the daily car
     const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
 
-    // Fallback to first car if today isn't found (for demo purposes)
-    const dailyCar = dailyCars.find(c => c.date === today) || dailyCars[0];
-    const storageKey = `cardle_state_${dailyCar.date}`;
+    const [dailyCar, setDailyCar] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const [guesses, setGuesses] = useState(() => {
-        const saved = localStorage.getItem(storageKey);
-        return saved ? JSON.parse(saved).guesses : [];
-    });
+    const [guesses, setGuesses] = useState([]);
+    const [gameState, setGameState] = useState('playing');
+    const [showModal, setShowModal] = useState(false);
 
-    const [gameState, setGameState] = useState(() => {
-        const saved = localStorage.getItem(storageKey);
-        return saved ? JSON.parse(saved).gameState : 'playing';
-    });
-
-    const [showModal, setShowModal] = useState(() => {
-        const saved = localStorage.getItem(storageKey);
-        if (saved) {
-            const { gameState } = JSON.parse(saved);
-            return gameState === 'won' || gameState === 'lost';
-        }
-        return false;
-    });
-
+    // Fetch Daily Car
     useEffect(() => {
+        const fetchDailyCar = async () => {
+            try {
+                // Adjust date format if stored differently in DB, but assuming standard YYYY-MM-DD
+                const { data, error } = await supabase
+                    .from('daily_games')
+                    .select(`
+                        *,
+                        make:makes(name),
+                        model:models(name)
+                    `)
+                    .eq('date', today)
+                    .single();
+
+                if (error) {
+                    console.error("Error fetching daily car:", error);
+                    // Fallback or error state?
+                    return;
+                }
+
+                if (data) {
+                    // Normalize data to match component expectation
+                    const carData = {
+                        ...data,
+                        make: data.make.name,
+                        model: data.model.name,
+                        imageUrl: data.image_url,
+                        gameOverImageURL: data.game_over_image_url,
+                        transformOrigin: data.transform_origin,
+                        maxZoom: data.max_zoom
+                    };
+                    setDailyCar(carData);
+
+                    // Initialize state from local storage AFTER we have the car date/id
+                    const storageKey = `cardle_state_${carData.date}`;
+                    const saved = localStorage.getItem(storageKey);
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        setGuesses(parsed.guesses || []);
+                        setGameState(parsed.gameState || 'playing');
+                        if (parsed.gameState === 'won' || parsed.gameState === 'lost') {
+                            setShowModal(true);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Unexpected error:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDailyCar();
+    }, [today]);
+
+    // Save state
+    useEffect(() => {
+        if (!dailyCar) return;
+        const storageKey = `cardle_state_${dailyCar.date}`;
         localStorage.setItem(storageKey, JSON.stringify({
             guesses,
             gameState
         }));
-    }, [guesses, gameState, storageKey]);
+    }, [guesses, gameState, dailyCar]);
+
+    if (loading) return <div style={styles.loading}>Loading...</div>;
+    if (!dailyCar) return <div style={styles.error}>No game found for today.</div>;
 
     const handleGuess = (guess) => {
         if (gameState !== 'playing') return;
@@ -72,12 +118,12 @@ const GameContainer = () => {
         // Check Win
         if (isMakeCorrect && isModelCorrect && isYearCorrect) {
             setGameState('won');
-            setTimeout(() => setShowModal(true), 1500); // Slight delay for dramatic effect
+            setTimeout(() => setShowModal(true), 2500);
         }
         // Check Loss
         else if (newGuesses.length >= 5) {
             setGameState('lost');
-            setTimeout(() => setShowModal(true), 1500);
+            setTimeout(() => setShowModal(true), 2500);
         }
     };
 
@@ -85,7 +131,7 @@ const GameContainer = () => {
         <div style={styles.container}>
             <header style={styles.header}>
                 <h1>CAR-DUHL</h1>
-                <p>Guess the car in 5 attempts or less!</p>
+                <p>Guess the car in 5 or fewer attempts!</p>
             </header>
 
             <ImageDisplay
@@ -96,7 +142,11 @@ const GameContainer = () => {
                 maxZoom={dailyCar.maxZoom}
             />
 
-            <GuessForm onGuess={handleGuess} disabled={gameState !== 'playing'} />
+            <GuessForm
+                onGuess={handleGuess}
+                gameState={gameState}
+                onViewResults={() => setShowModal(true)}
+            />
 
             <GuessHistory guesses={guesses} />
 
@@ -124,6 +174,16 @@ const styles = {
     header: {
         textAlign: 'center',
         marginBottom: '20px',
+    },
+    loading: {
+        color: 'white',
+        fontSize: '1.5rem',
+        marginTop: '50px',
+    },
+    error: {
+        color: '#ff6b6b',
+        fontSize: '1.5rem',
+        marginTop: '50px',
     },
 };
 
