@@ -1,18 +1,31 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import initialDailyCars from '../data/dailyCars.json';
-import carsData from '../data/cars.json';
+import { supabase } from '../lib/supabaseClient';
 import ImageDisplay from './ImageDisplay';
 
 const ProofSheet = () => {
-    const [puzzles, setPuzzles] = useState(() =>
-        [...initialDailyCars].sort((a, b) => new Date(a.date) - new Date(b.date))
-    );
-    const [isLocal, setIsLocal] = useState(false);
+    const [puzzles, setPuzzles] = useState([]);
+    const [makes, setMakes] = useState([]);
+    const [models, setModels] = useState([]);
+
+    // Auth / Editing State
+    // Ideally we check if user is admin, but for now we assume this page is protected or internal tool
     const [isEditing, setIsEditing] = useState(null); // ID of car being edited
     const [showAddForm, setShowAddForm] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Memoize the sorted puzzles to avoid re-sorting on every render
+    // Form states for adding/editing
+    const [formData, setFormData] = useState({
+        date: '',
+        make_id: '',
+        model_id: '',
+        year: '',
+        imageUrl: '',
+        gameOverImageURL: '',
+        transformOrigin: 'center center',
+        maxZoom: 5
+    });
+
+    // Memoize the sorted puzzles
     const sortedPuzzles = useMemo(() => {
         return [...puzzles].sort((a, b) => new Date(a.date) - new Date(b.date));
     }, [puzzles]);
@@ -33,117 +46,195 @@ const ProofSheet = () => {
             });
     }, [puzzles]);
 
-    // Form states for adding/editing
-    const [formData, setFormData] = useState({
-        date: '',
-        make: '',
-        model: '',
-        year: '',
-        imageUrl: '',
-        gameOverImageURL: '',
-        transformOrigin: 'center center',
-        maxZoom: 5
-    });
-
     useEffect(() => {
         fetchPuzzles();
+        fetchMakes();
     }, []);
 
+    // When Make changes, fetch relevant models
+    useEffect(() => {
+        if (formData.make_id) {
+            fetchModels(formData.make_id);
+        } else {
+            setModels([]);
+        }
+    }, [formData.make_id]);
+
     const fetchPuzzles = async () => {
+        setIsLoading(true);
         try {
-            const res = await fetch('http://localhost:3001/api/puzzles');
-            if (res.ok) {
-                const data = await res.json();
-                setPuzzles(data);
-                setIsLocal(true);
-            }
-        } catch (e) {
-            console.log("Not running locally or dev-server not started. CRUD disabled.");
-            setIsLocal(false);
+            const { data, error } = await supabase
+                .from('daily_games')
+                .select(`
+                    *,
+                    make:makes(id, name),
+                    model:models(id, name)
+                `)
+                .order('date', { ascending: true });
+
+            if (error) throw error;
+
+            // Flatten data for easier consumption
+            const formatted = data.map(d => ({
+                id: d.id,
+                date: d.date,
+                year: d.year,
+                make: d.make?.name || 'Unknown',
+                model: d.model?.name || 'Unknown',
+                make_id: d.make_id,
+                model_id: d.model_id,
+                imageUrl: d.image_url,
+                gameOverImageURL: d.game_over_image_url || '',
+                transformOrigin: d.transform_origin,
+                maxZoom: d.max_zoom
+            }));
+
+            setPuzzles(formatted);
+        } catch (error) {
+            console.error('Error fetching puzzles:', error);
+            alert('Error loading puzzles');
         } finally {
             setIsLoading(false);
         }
     };
 
+    const fetchMakes = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('makes')
+                .select('*')
+                .order('name', { ascending: true });
+
+            if (error) throw error;
+            setMakes(data || []);
+        } catch (error) {
+            console.error('Error fetching makes:', error);
+        }
+    };
+
+    const fetchModels = async (makeId) => {
+        try {
+            const { data, error } = await supabase
+                .from('models')
+                .select('*')
+                .eq('make_id', makeId)
+                .order('name', { ascending: true });
+
+            if (error) throw error;
+            setModels(data || []);
+        } catch (error) {
+            console.error('Error fetching models:', error);
+        }
+    };
+
     const handleSave = async (e) => {
         e.preventDefault();
-        const url = isEditing
-            ? `http://localhost:3001/api/puzzles/${isEditing}`
-            : 'http://localhost:3001/api/puzzles';
-        const method = isEditing ? 'PUT' : 'POST';
 
         try {
-            const res = await fetch(url, {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...formData,
-                    make: formData.make.toUpperCase()
-                })
-            });
-            if (res.ok) {
-                fetchPuzzles();
-                setIsEditing(null);
-                setShowAddForm(false);
-                resetForm();
+            const payload = {
+                date: formData.date,
+                year: parseInt(formData.year),
+                make_id: parseInt(formData.make_id),
+                model_id: parseInt(formData.model_id),
+                image_url: formData.imageUrl,
+                game_over_image_url: formData.gameOverImageURL || null,
+                transform_origin: formData.transformOrigin,
+                max_zoom: parseFloat(formData.maxZoom)
+            };
+
+            let error;
+
+            if (isEditing) {
+                const { error: updateError } = await supabase
+                    .from('daily_games')
+                    .update(payload)
+                    .eq('id', isEditing);
+                error = updateError;
+            } else {
+                const { error: insertError } = await supabase
+                    .from('daily_games')
+                    .insert([payload]);
+                error = insertError;
             }
-        } catch (e) {
-            alert("Failed to save. Is dev-server.js running?");
+
+            if (error) throw error;
+
+            fetchPuzzles();
+            setIsEditing(null);
+            setShowAddForm(false);
+            resetForm();
+            alert(isEditing ? 'Puzzle updated!' : 'Puzzle created!');
+
+        } catch (error) {
+            console.error('Error saving puzzle:', error);
+            alert(`Failed to save: ${error.message}`);
         }
     };
 
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this puzzle?")) return;
         try {
-            const res = await fetch(`http://localhost:3001/api/puzzles/${id}`, { method: 'DELETE' });
-            if (res.ok) fetchPuzzles();
-        } catch (e) {
-            alert("Failed to delete.");
+            const { error } = await supabase
+                .from('daily_games')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+            fetchPuzzles();
+        } catch (error) {
+            console.error('Error deleting puzzle:', error);
+            alert('Failed to delete puzzle');
         }
     };
 
     const startEdit = (car) => {
         setIsEditing(car.id);
+        // Ensure models are loaded for this make
+        if (car.make_id) fetchModels(car.make_id);
+
         setFormData({
-            ...car,
-            make: car.make.toUpperCase(),
-            maxZoom: parseFloat(car.maxZoom) || 5
+            date: car.date,
+            year: car.year,
+            make_id: car.make_id,
+            model_id: car.model_id,
+            imageUrl: car.imageUrl,
+            gameOverImageURL: car.gameOverImageURL,
+            transformOrigin: car.transformOrigin,
+            maxZoom: car.maxZoom
         });
-        window.scrollTo({ top: 0 }); // Removed smooth scroll as it can be heavy during complex renders
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const resetForm = () => {
         setFormData({
             date: '',
-            make: '',
-            model: '',
+            make_id: '',
+            model_id: '',
             year: '',
             imageUrl: '',
             gameOverImageURL: '',
             transformOrigin: 'center center',
             maxZoom: 5
         });
+        setIsEditing(null);
     };
 
     return (
         <div style={styles.container}>
             <header style={styles.header}>
-                <h1>Proof Sheet {isLocal && <span style={styles.badge}>DASHBOARD MODE</span>}</h1>
+                <h1>Proof Sheet <span style={styles.badge}>SUPABASE CONNECTED</span></h1>
                 <p>Reviewing {puzzles.length} configured cars</p>
                 {isLoading && <p>Loading data...</p>}
-                {!isLocal && !isLoading && <p style={{ color: '#888', fontSize: '0.8rem' }}>Run `npm run dev` to enable editing</p>}
             </header>
 
-            {isLocal && (
-                <div style={styles.adminControls}>
-                    <button
-                        onClick={() => { setShowAddForm(!showAddForm); setIsEditing(null); resetForm(); }}
-                        style={styles.addButton}
-                    >
-                        {showAddForm || isEditing ? 'Cancel' : '+ Add New Daily Car'}
-                    </button>
-                </div>
-            )}
+            <div style={styles.adminControls}>
+                <button
+                    onClick={() => { setShowAddForm(!showAddForm); setIsEditing(null); resetForm(); }}
+                    style={styles.addButton}
+                >
+                    {showAddForm || isEditing ? 'Cancel' : '+ Add New Daily Car'}
+                </button>
+            </div>
 
             {(showAddForm || isEditing) && (
                 <section style={styles.formSection}>
@@ -156,25 +247,34 @@ const ProofSheet = () => {
                             </div>
                             <div style={styles.field}>
                                 <label style={styles.label}>Year:</label>
-                                <input type="number" value={formData.year} onChange={e => setFormData({ ...formData, year: parseInt(e.target.value) })} required style={styles.crudInput} />
+                                <input type="number" value={formData.year} onChange={e => setFormData({ ...formData, year: e.target.value })} required style={styles.crudInput} />
                             </div>
                         </div>
 
                         <div style={styles.formRow}>
                             <div style={styles.field}>
                                 <label style={styles.label}>Make:</label>
-                                <select value={formData.make} onChange={e => setFormData({ ...formData, make: e.target.value, model: '' })} required style={styles.crudInput}>
+                                <select
+                                    value={formData.make_id}
+                                    onChange={e => setFormData({ ...formData, make_id: e.target.value, model_id: '' })}
+                                    required
+                                    style={styles.crudInput}
+                                >
                                     <option value="">Select Make</option>
-                                    {carsData.makes.map(m => <option key={m.id} value={m.make}>{m.make}</option>)}
+                                    {makes.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                                 </select>
                             </div>
                             <div style={styles.field}>
                                 <label style={styles.label}>Model:</label>
-                                <select value={formData.model} onChange={e => setFormData({ ...formData, model: e.target.value })} required style={styles.crudInput}>
+                                <select
+                                    value={formData.model_id}
+                                    onChange={e => setFormData({ ...formData, model_id: e.target.value })}
+                                    required
+                                    style={styles.crudInput}
+                                    disabled={!formData.make_id}
+                                >
                                     <option value="">Select Model</option>
-                                    {formData.make && carsData.makes.find(m => m.make === formData.make)?.models.map(m => (
-                                        <option key={m.id} value={m.model}>{m.model}</option>
-                                    ))}
+                                    {models.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                                 </select>
                             </div>
                         </div>
@@ -192,7 +292,7 @@ const ProofSheet = () => {
                         <div style={styles.formRow}>
                             <div style={styles.field}>
                                 <label style={styles.label}>Max Zoom (Guess #1): {formData.maxZoom}</label>
-                                <input type="range" min="1" max="10" step="0.1" value={formData.maxZoom} onChange={e => setFormData({ ...formData, maxZoom: parseFloat(e.target.value) })} style={styles.rangeInput} />
+                                <input type="range" min="1" max="10" step="0.1" value={formData.maxZoom} onChange={e => setFormData({ ...formData, maxZoom: e.target.value })} style={styles.rangeInput} />
                             </div>
                             <div style={styles.field}>
                                 <label style={styles.label}>Transform Origin (X% Y%):</label>
@@ -276,12 +376,10 @@ const ProofSheet = () => {
                                     </a>
                                 </>
                             )}
-                            {isLocal && (
-                                <div style={styles.cardActions}>
-                                    <button onClick={() => startEdit(car)} style={styles.editButton}>Adjust</button>
-                                    <button onClick={() => handleDelete(car.id)} style={styles.deleteButton}>Remove</button>
-                                </div>
-                            )}
+                            <div style={styles.cardActions}>
+                                <button onClick={() => startEdit(car)} style={styles.editButton}>Adjust</button>
+                                <button onClick={() => handleDelete(car.id)} style={styles.deleteButton}>Remove</button>
+                            </div>
                         </div>
                     </div>
                 ))}
