@@ -8,12 +8,19 @@ const ImageDisplay = ({ imageUrl, zoomLevel, gameStatus, transformOrigin, maxZoo
         // If we lost or won (game over), show full image
         if (gameStatus !== 'playing') return 1;
 
-        // Start at 5x scale, or custom maxZoom
-        // Decrease by ~20% for each incorrect guess (was 30%)
-        const initialScale = maxZoom || 5;
-        const reductionFactor = 0.9;
-        // zoomLevel starts at 1, so index is zoomLevel - 1
-        let scale = initialScale * Math.pow(reductionFactor, zoomLevel - 1);
+        const guessCount = zoomLevel;
+        let scale = maxZoom || 5;
+
+        // Progressive Zoom Logic:
+        // Start with 10% reduction, increase reduction by 2.5% each step
+        // e.g., 10%, 12.5%, 15%, 17.5%, 20%
+        let currentReduction = 0.90; // Factor for 10% reduction
+        const progression = 0.025;   // 2.5% change
+
+        for (let i = 0; i < guessCount; i++) {
+            scale = scale * currentReduction;
+            currentReduction -= progression; // Decrease factor = Increase zoom-out
+        }
 
         return Math.max(scale, 1);
     };
