@@ -245,7 +245,7 @@ const GameContainer = () => {
 
             <ImageDisplay
                 imageUrl={dailyCar.imageUrl}
-                zoomLevel={guesses.length + .1} // Zoom out rate
+                zoomLevel={guesses.length}
                 gameStatus={gameState}
                 transformOrigin={dailyCar.transformOrigin}
                 maxZoom={dailyCar.maxZoom}
