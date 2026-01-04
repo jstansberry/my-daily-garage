@@ -61,9 +61,39 @@ const GameContainer = () => {
 
                     // Initialize state from local storage AFTER we have the car date/id
                     const userId = user ? user.id : 'anon';
+
+                    // 1. Try to load from Server (Anti-Cheat) if logged in
+                    let serverGuesses = null;
+                    if (user) {
+                        const { data: progressData } = await supabase
+                            .from('game_progress')
+                            .select('guesses')
+                            .eq('user_id', user.id)
+                            .eq('daily_game_id', carData.id)
+                            .single();
+
+                        if (progressData) {
+                            serverGuesses = progressData.guesses;
+                        }
+                    }
+
+                    // 2. Try to load from LocalStorage
                     const storageKey = `cardle_state_${carData.date}_${userId}`;
                     const saved = localStorage.getItem(storageKey);
-                    if (saved) {
+
+                    // Priority: Server Data > Local Storage
+                    // This prevents users from clearing cache to reset attempts
+                    if (serverGuesses && serverGuesses.length > 0) {
+                        setGuesses(serverGuesses);
+                        setGameState('playing'); // Will be updated by check logic if needed? 
+                        // Check if lost based on server data
+                        if (serverGuesses.length >= 5) {
+                            const score = calculateScore(serverGuesses);
+                            setUserScore(score);
+                            setGameState('lost');
+                            setShowModal(true);
+                        }
+                    } else if (saved) {
                         const parsed = JSON.parse(saved);
                         setGuesses(parsed.guesses || []);
                         setGameState(parsed.gameState || 'playing');
@@ -158,6 +188,22 @@ const GameContainer = () => {
         }
     };
 
+    const saveProgress = async (newGuesses) => {
+        if (!user || !dailyCar) return;
+
+        try {
+            await supabase
+                .from('game_progress')
+                .upsert({
+                    user_id: user.id,
+                    daily_game_id: dailyCar.id,
+                    guesses: newGuesses
+                }, { onConflict: 'user_id, daily_game_id' });
+        } catch (err) {
+            console.error("Error saving progress:", err);
+        }
+    };
+
     const handleGuess = (guess) => {
         if (gameState !== 'playing') return;
 
@@ -187,6 +233,7 @@ const GameContainer = () => {
 
         const newGuesses = [...guesses, newGuess];
         setGuesses(newGuesses);
+        saveProgress(newGuesses); // Sync to DB immediately (Anti-Cheat)
 
         // Check Win
         if (isMakeCorrect && isModelCorrect && isYearCorrect) {
