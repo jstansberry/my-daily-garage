@@ -11,6 +11,18 @@ const ProofSheet = () => {
     const [puzzles, setPuzzles] = useState([]);
     const [makes, setMakes] = useState([]);
     const [models, setModels] = useState([]);
+    const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
+
+    // Date Filters
+    // Helper to get YYYY-MM-DD in NY timezone
+    const getNYDateString = (offsetDays = 0) => {
+        const d = new Date();
+        d.setDate(d.getDate() + offsetDays);
+        return d.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+    };
+
+    const [filterStartDate, setFilterStartDate] = useState(getNYDateString(0));
+    const [filterEndDate, setFilterEndDate] = useState(getNYDateString(30));
 
     // Auth / Editing State
     const [isEditing, setIsEditing] = useState(null); // ID of car being edited
@@ -30,10 +42,18 @@ const ProofSheet = () => {
         maxZoom: 5
     });
 
-    // Memoize the sorted puzzles
-    const sortedPuzzles = useMemo(() => {
-        return [...puzzles].sort((a, b) => new Date(a.date) - new Date(b.date));
-    }, [puzzles]);
+    // Memoize the sorted and filtered puzzles
+    const filteredPuzzles = useMemo(() => {
+        return puzzles
+            .filter(p => {
+                if (!filterStartDate && !filterEndDate) return true;
+                const pDate = p.date; // String comparison works for YYYY-MM-DD
+                const start = filterStartDate || '0000-01-01';
+                const end = filterEndDate || '9999-12-31';
+                return pDate >= start && pDate <= end;
+            })
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
+    }, [puzzles, filterStartDate, filterEndDate]);
 
     // Memoize the distribution summary
     const distributionSummary = useMemo(() => {
@@ -354,36 +374,85 @@ const ProofSheet = () => {
             )}
 
             <section style={styles.summarySection}>
-                <h2 style={styles.subTitle}>Car Distribution Summary</h2>
-                <table style={styles.table}>
-                    <thead>
-                        <tr>
-                            <th style={styles.th}>Year</th>
-                            <th style={styles.th}>Make</th>
-                            <th style={styles.th}>Model</th>
-                            <th style={styles.th}>Count</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {distributionSummary.map((item, idx) => {
-                            const key = `${item.year}|${item.make}|${item.model}`;
-                            return (
-                                <tr key={key} style={styles.tr}>
-                                    <td style={styles.td}>{item.year}</td>
-                                    <td style={styles.td}>{item.make}</td>
-                                    <td style={styles.td}>{item.model}</td>
-                                    <td style={{ ...styles.td, fontWeight: 'bold', color: item.count > 3 ? '#e94560' : '#ccc' }}>
-                                        {item.count}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                <div
+                    onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                    style={{ ...styles.subTitle, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+                >
+                    Car Distribution Summary
+                    <span style={{ fontSize: '0.8rem', color: '#a3f7bf' }}>
+                        {isSummaryExpanded ? '▼' : '▶'}
+                    </span>
+                </div>
+
+                {isSummaryExpanded && (
+                    <table style={styles.table}>
+                        <thead>
+                            <tr>
+                                <th style={styles.th}>Year</th>
+                                <th style={styles.th}>Make</th>
+                                <th style={styles.th}>Model</th>
+                                <th style={styles.th}>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {distributionSummary.map((item, idx) => {
+                                const key = `${item.year}|${item.make}|${item.model}`;
+                                return (
+                                    <tr key={key} style={styles.tr}>
+                                        <td style={styles.td}>{item.year}</td>
+                                        <td style={styles.td}>{item.make}</td>
+                                        <td style={styles.td}>{item.model}</td>
+                                        <td style={{ ...styles.td, fontWeight: 'bold', color: item.count > 3 ? '#e94560' : '#ccc' }}>
+                                            {item.count}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
+            </section>
+
+
+
+            {/* Date Filter Section */}
+            <section style={styles.filterSection}>
+                <div style={styles.filterRow}>
+                    <div style={styles.filterField}>
+                        <label style={styles.filterLabel}>Start Date:</label>
+                        <input
+                            type="date"
+                            value={filterStartDate}
+                            onChange={(e) => setFilterStartDate(e.target.value)}
+                            style={styles.filterInput}
+                        />
+                    </div>
+                    <div style={styles.filterField}>
+                        <label style={styles.filterLabel}>End Date:</label>
+                        <input
+                            type="date"
+                            value={filterEndDate}
+                            onChange={(e) => setFilterEndDate(e.target.value)}
+                            style={styles.filterInput}
+                        />
+                    </div>
+                    <button
+                        onClick={() => { setFilterStartDate(''); setFilterEndDate(''); }}
+                        style={styles.clearButton}
+                    >
+                        Clear Filter
+                    </button>
+                    <button
+                        onClick={() => { setFilterStartDate(getNYDateString(0)); setFilterEndDate(getNYDateString(30)); }}
+                        style={styles.resetButton}
+                    >
+                        Reset to Next 30 Days
+                    </button>
+                </div>
             </section>
 
             <div style={styles.grid}>
-                {sortedPuzzles.map((car) => (
+                {filteredPuzzles.map((car) => (
                     <div key={car.id || car.date} style={styles.card}>
                         <div style={styles.imageContainer}>
                             <ImageDisplay
@@ -425,7 +494,7 @@ const ProofSheet = () => {
                     </div>
                 ))}
             </div>
-        </div>
+        </div >
     );
 };
 
@@ -625,6 +694,58 @@ const styles = {
         borderRadius: '4px',
         cursor: 'pointer',
         fontSize: '0.8rem'
+    },
+    filterSection: {
+        marginBottom: '30px',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    filterRow: {
+        display: 'flex',
+        gap: '15px',
+        alignItems: 'end',
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        padding: '15px',
+        borderRadius: '8px',
+        border: '1px solid rgba(255, 255, 255, 0.1)'
+    },
+    filterField: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '5px'
+    },
+    filterLabel: {
+        fontSize: '0.8rem',
+        color: '#ccc',
+        fontWeight: 'bold'
+    },
+    filterInput: {
+        padding: '8px',
+        backgroundColor: '#16213e',
+        border: '1px solid #0f3460',
+        borderRadius: '4px',
+        color: '#fff',
+        fontSize: '0.9rem'
+    },
+    clearButton: {
+        padding: '8px 12px',
+        backgroundColor: 'transparent',
+        color: '#ccc',
+        border: '1px solid #555',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        fontSize: '0.8rem',
+        height: '35px'
+    },
+    resetButton: {
+        padding: '8px 12px',
+        backgroundColor: '#0f3460',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        fontSize: '0.8rem',
+        height: '35px'
     }
 };
 
