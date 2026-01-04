@@ -18,6 +18,7 @@ const GameContainer = () => {
     const [gameState, setGameState] = useState('playing');
     const [showModal, setShowModal] = useState(false);
     const [userScore, setUserScore] = useState(0);
+    const [isLoaded, setIsLoaded] = useState(false);
     const { user } = useAuth();
     const prevUserIdRef = useRef(user ? user.id : 'anon');
 
@@ -25,6 +26,7 @@ const GameContainer = () => {
 
     // Fetch Daily Car
     useEffect(() => {
+        setIsLoaded(false); // Reset load state when user/date changes to prevent race conditions during fetch
         const fetchDailyCar = async () => {
             try {
                 // Adjust date format if stored differently in DB, but assuming standard YYYY-MM-DD
@@ -66,6 +68,8 @@ const GameContainer = () => {
                         setGuesses(parsed.guesses || []);
                         setGameState(parsed.gameState || 'playing');
                         if (parsed.gameState === 'won' || parsed.gameState === 'lost') {
+                            const recoveredScore = calculateScore(parsed.guesses || []);
+                            setUserScore(recoveredScore);
                             setShowModal(true);
                         }
                     } else {
@@ -73,7 +77,9 @@ const GameContainer = () => {
                         setGuesses([]);
                         setGameState('playing');
                         setShowModal(false);
+                        setUserScore(0);
                     }
+                    setIsLoaded(true);
                 }
             } catch (err) {
                 console.error("Unexpected error:", err);
@@ -103,7 +109,6 @@ const GameContainer = () => {
                     setUserScore(data.score);
                     setGameState('won'); // Reveal image
                     setShowModal(true); // Show results immediately
-                    setGuesses([]); // Clear guesses as per requirement
                 }
             } catch (err) {
                 console.error("Error checking score:", err);
@@ -115,7 +120,7 @@ const GameContainer = () => {
 
     // Save state
     useEffect(() => {
-        if (!dailyCar) return;
+        if (!dailyCar || !isLoaded) return; // Don't save if not loaded (prevents overwriting with empty initial state)
 
         const currentUserId = user ? user.id : 'anon';
 
@@ -130,44 +135,12 @@ const GameContainer = () => {
             guesses,
             gameState
         }));
-    }, [guesses, gameState, dailyCar, user]);
+    }, [guesses, gameState, dailyCar, user, isLoaded]);
 
     if (loading) return <div style={styles.loading}>Loading Daily Car...</div>;
     if (!dailyCar) return <div style={styles.error}>No car scheduled for today ({today}). check back later!</div>;
 
-    const calculateScore = (finalGuesses) => {
-        // Perfect First Try (All 3 correct on first guess)
-        if (finalGuesses.length > 0) {
-            const first = finalGuesses[0];
-            if (first.isMakeCorrect && first.isModelCorrect && first.isYearCorrect) {
-                return 100;
-            }
-        }
 
-        let score = 0;
-        const found = { make: false, model: false, year: false };
-        const pointsMap = [25, 20, 15, 10, 5];
-
-        finalGuesses.forEach((g, index) => {
-            if (index > 4) return; // Max 5 attempts for points
-            const pts = pointsMap[index];
-
-            if (!found.make && g.isMakeCorrect) {
-                score += pts;
-                found.make = true;
-            }
-            if (!found.model && g.isModelCorrect) {
-                score += pts;
-                found.model = true;
-            }
-            if (!found.year && g.isYearCorrect) {
-                score += pts;
-                found.year = true;
-            }
-        });
-
-        return score;
-    };
 
     const saveScore = async (score) => {
         if (!user || !dailyCar) return;
@@ -270,6 +243,40 @@ const GameContainer = () => {
             )}
         </div>
     );
+};
+
+const calculateScore = (finalGuesses) => {
+    // Perfect First Try (All 3 correct on first guess)
+    if (finalGuesses.length > 0) {
+        const first = finalGuesses[0];
+        if (first.isMakeCorrect && first.isModelCorrect && first.isYearCorrect) {
+            return 100;
+        }
+    }
+
+    let score = 0;
+    const found = { make: false, model: false, year: false };
+    const pointsMap = [25, 20, 15, 10, 5];
+
+    finalGuesses.forEach((g, index) => {
+        if (index > 4) return; // Max 5 attempts for points
+        const pts = pointsMap[index];
+
+        if (!found.make && g.isMakeCorrect) {
+            score += pts;
+            found.make = true;
+        }
+        if (!found.model && g.isModelCorrect) {
+            score += pts;
+            found.model = true;
+        }
+        if (!found.year && g.isYearCorrect) {
+            score += pts;
+            found.year = true;
+        }
+    });
+
+    return score;
 };
 
 const styles = {
