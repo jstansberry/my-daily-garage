@@ -16,7 +16,7 @@ const PastGamesModal = ({ onClose }) => {
                     .from('user_scores')
                     .select(`
                         score,
-                        created_at,
+                        completed_at,
                         daily_game:daily_games (
                             date,
                             year,
@@ -25,7 +25,7 @@ const PastGamesModal = ({ onClose }) => {
                         )
                     `)
                     .eq('user_id', user.id)
-                    .order('created_at', { ascending: false });
+                    .order('completed_at', { ascending: false });
 
                 if (error) throw error;
 
