@@ -29,6 +29,31 @@ const GrandPrixLeaderboard = () => {
         return () => clearInterval(interval);
     }, []);
 
+    // Calculate Date Range (Monday - Sunday)
+    const getWeekRange = () => {
+        const d = new Date();
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+        const monday = new Date(d.setDate(diff));
+        const sunday = new Date(new Date(monday).setDate(monday.getDate() + 6));
+
+        const formatDate = (date) => {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const month = months[date.getMonth()];
+            const dayNum = date.getDate();
+
+            // Ordinal suffix
+            let suffix = 'th';
+            if (dayNum % 10 === 1 && dayNum !== 11) suffix = 'st';
+            else if (dayNum % 10 === 2 && dayNum !== 12) suffix = 'nd';
+            else if (dayNum % 10 === 3 && dayNum !== 13) suffix = 'rd';
+
+            return `${month} ${dayNum}${suffix}`;
+        };
+
+        return `${formatDate(monday)} - ${formatDate(sunday)}`;
+    };
+
     return (
         <div style={styles.towerContainer}>
             <div style={styles.towerHeader}>
@@ -36,6 +61,7 @@ const GrandPrixLeaderboard = () => {
                 <div style={styles.titleContainer}>
                     <h3 style={styles.towerTitle}>GRAND PRIX</h3>
                     <span style={styles.weekLabel}>WEEKLY STANDINGS</span>
+                    <span style={styles.weekLabel}>{getWeekRange()}</span>
                 </div>
             </div>
 
