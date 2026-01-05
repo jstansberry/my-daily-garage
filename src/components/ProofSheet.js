@@ -269,7 +269,7 @@ const ProofSheet = () => {
     return (
         <div style={styles.container}>
             <header style={styles.header}>
-                <h1>Proof Sheet <span style={styles.badge}>ADMIN MODE</span></h1>
+                <h1>Proof Sheet</h1>
 
                 <div style={{ marginTop: '10px' }}><Login /></div>
                 {isLoading && <p>Loading data...</p>}

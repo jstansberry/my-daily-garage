@@ -5,7 +5,7 @@ import GuessHistory from './GuessHistory';
 import GameOverModal from './GameOverModal';
 import Login from './Login';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabaseClient';
+import { supabase, supabaseUrl } from '../lib/supabaseClient';
 
 const GameContainer = () => {
     // Use US Eastern Time (America/New_York) to determine the daily car
@@ -52,8 +52,8 @@ const GameContainer = () => {
                         ...data,
                         make: data.make.name,
                         model: data.model.name,
-                        imageUrl: data.image_url,
-                        gameOverImageURL: data.game_over_image_url,
+                        imageUrl: `${supabaseUrl}/functions/v1/serve-image?id=${data.id}&type=main`,
+                        gameOverImageURL: `${supabaseUrl}/functions/v1/serve-image?id=${data.id}&type=reveal`,
                         transformOrigin: data.transform_origin,
                         maxZoom: data.max_zoom
                     };
@@ -70,7 +70,7 @@ const GameContainer = () => {
                             .select('score')
                             .eq('user_id', user.id)
                             .eq('daily_game_id', carData.id)
-                            .single();
+                            .maybeSingle();
 
                         if (scoreData) {
                             completedScore = scoreData.score;
@@ -85,7 +85,7 @@ const GameContainer = () => {
                             .select('guesses')
                             .eq('user_id', user.id)
                             .eq('daily_game_id', carData.id)
-                            .single();
+                            .maybeSingle();
 
                         if (progressData) {
                             serverGuesses = progressData.guesses;
