@@ -512,7 +512,44 @@ const ProofSheet = () => {
                             </div>
                             <div style={styles.field}>
                                 <label style={styles.label}>Transform Origin (X% Y%):</label>
-                                <input type="text" value={formData.transformOrigin} placeholder="35% 50%" onChange={e => setFormData({ ...formData, transformOrigin: e.target.value })} style={styles.crudInput} />
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <span style={{ minWidth: '30px', fontSize: '0.8rem' }}>X:</span>
+                                        <input
+                                            type="range"
+                                            min="0"
+                                            max="100"
+                                            step="1"
+                                            value={parseInt((formData.transformOrigin || '50% 50%').split(' ')[0]) || 50}
+                                            onChange={(e) => {
+                                                const currentY = (formData.transformOrigin || '50% 50%').split(' ')[1] || '50%';
+                                                setFormData({ ...formData, transformOrigin: `${e.target.value}% ${currentY}` });
+                                            }}
+                                            style={{ flex: 1 }}
+                                        />
+                                        <span style={{ minWidth: '40px', fontSize: '0.8rem', textAlign: 'right' }}>
+                                            {(formData.transformOrigin || '50% 50%').split(' ')[0]}
+                                        </span>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <span style={{ minWidth: '30px', fontSize: '0.8rem' }}>Y:</span>
+                                        <input
+                                            type="range"
+                                            min="0"
+                                            max="100"
+                                            step="1"
+                                            value={parseInt((formData.transformOrigin || '50% 50%').split(' ')[1]) || 50}
+                                            onChange={(e) => {
+                                                const currentX = (formData.transformOrigin || '50% 50%').split(' ')[0] || '50%';
+                                                setFormData({ ...formData, transformOrigin: `${currentX} ${e.target.value}%` });
+                                            }}
+                                            style={{ flex: 1 }}
+                                        />
+                                        <span style={{ minWidth: '40px', fontSize: '0.8rem', textAlign: 'right' }}>
+                                            {(formData.transformOrigin || '50% 50%').split(' ')[1]}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
