@@ -5,6 +5,8 @@ import ProofSheet from './components/ProofSheet';
 import GrandPrixLeaderboard from './components/GrandPrixLeaderboard';
 import Header from './components/Header';
 
+import PrivacyPolicy from './components/PrivacyPolicy';
+
 function App() {
     const [path, setPath] = React.useState(window.location.pathname);
 
@@ -18,20 +20,14 @@ function App() {
     }, []);
 
     // Simple Router
+    let content;
     if (path === '/proof-sheet') {
-        return (
-            <div className="App" style={styles.appWrapper}>
-                <Header />
-                <ProofSheet />
-            </div>
-        );
-    }
-
-    // Default Route (Game) - Includes Grand Prix Leaderboard
-    return (
-        <div className="App" style={styles.appWrapper}>
-            <Header />
-
+        content = <ProofSheet />;
+    } else if (path === '/privacy') {
+        content = <PrivacyPolicy />;
+    } else {
+        // Default Route (Game) - Includes Grand Prix Leaderboard
+        content = (
             <div style={styles.mainContainer}>
                 <div style={styles.gameColumn}>
                     <GameContainer />
@@ -41,6 +37,22 @@ function App() {
                     <GrandPrixLeaderboard />
                 </div>
             </div>
+        );
+    }
+
+    return (
+        <div className="App" style={styles.appWrapper}>
+            <Header />
+
+            {content}
+
+            <footer style={styles.footer}>
+                <div style={styles.footerContent}>
+                    <span>&copy; 2026 My Daily Garage</span>
+                    <a href="/privacy" style={styles.footerLink}>Privacy Policy</a>
+                    <a href="/" style={styles.footerLink}>Home</a>
+                </div>
+            </footer>
         </div>
     );
 }
@@ -72,6 +84,28 @@ const styles = {
     sidebarColumn: {
         flex: '0 0 auto',
         marginTop: '20px' // Align with GameContainer padding (20px) so image and leaderboard tops align
+    },
+    footer: {
+        width: '100%',
+        padding: '40px 0 20px 0',
+        marginTop: 'auto',
+        borderTop: '1px solid #333',
+        backgroundColor: 'rgba(0,0,0,0.2)'
+    },
+    footerContent: {
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '0 20px',
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '20px',
+        fontSize: '0.8rem',
+        color: '#888'
+    },
+    footerLink: {
+        color: '#888',
+        textDecoration: 'none',
+        transition: 'color 0.2s'
     }
 };
 
