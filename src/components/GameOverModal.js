@@ -21,7 +21,7 @@ const GameOverModal = ({ dailyCar, guesses, gameState, score, onClose }) => {
             text += `${index + 1}. ${makeIcon}${modelIcon}${yearIcon} ${guess.make} ${guess.model} ${guess.year}\n`;
         });
 
-        text += '\nPlay at: https://carduhl.vercel.app/'; // Update with real URL later
+        text += '\nPlay at: https://www.mydailygarage.com'; // Update with real URL later
         return text;
     };
 
