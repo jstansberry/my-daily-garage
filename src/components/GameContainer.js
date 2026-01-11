@@ -125,19 +125,31 @@ const GameContainer = () => {
                     if (completedScore !== null) {
                         // CASE A: Game is Completed
                         setUserScore(completedScore);
-                        setGameState('won'); // Default to 'won' for reveal, modal will show score
-                        setShowModal(true);
 
                         // Restore guesses history if available (Server > Local > Empty)
+                        let restoredGuesses = [];
                         if (serverGuesses && serverGuesses.length > 0) {
-                            setGuesses(serverGuesses);
+                            restoredGuesses = serverGuesses;
                         } else if (saved) {
                             const parsed = JSON.parse(saved);
-                            setGuesses(parsed.guesses || []);
-                        } else {
-                            // If no history found, we still show the modal with the score
-                            setGuesses([]);
+                            restoredGuesses = parsed.guesses || [];
                         }
+
+                        setGuesses(restoredGuesses);
+
+                        // Determine Win/Loss based on guesses
+                        let finalState = 'lost'; // Default to lost if we can't prove a win
+                        if (restoredGuesses.length > 0) {
+                            // Check if any guess was a total winner
+                            // (Usually the last one, but checking all just in case)
+                            const hasWinningGuess = restoredGuesses.some(g =>
+                                g.isMakeCorrect && g.isModelCorrect && g.isYearCorrect
+                            );
+                            if (hasWinningGuess) finalState = 'won';
+                        }
+
+                        setGameState(finalState);
+                        setShowModal(true);
                     }
                     else if (serverGuesses && serverGuesses.length > 0) {
                         // CASE B: In Progress (Server)
