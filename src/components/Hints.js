@@ -145,7 +145,7 @@ const styles = {
         textAlign: 'left',
         fontSize: '0.85rem',
         color: '#ddd',
-        maxWidth: '250px',
+        maxWidth: '325px',
         backgroundColor: 'rgba(0,0,0,0.3)',
         padding: '10px',
         borderRadius: '8px'
