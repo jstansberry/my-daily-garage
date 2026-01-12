@@ -19,34 +19,9 @@ const GrandPrixLeaderboard = () => {
 
                 if (leaderboardError) throw leaderboardError;
 
-                if (leaderboardData && leaderboardData.length > 0) {
-                    // 2. Fetch Profile Wins for these users
-                    const userIds = leaderboardData.map(l => l.user_id);
-                    const { data: profilesData, error: profilesError } = await supabase
-                        .from('profiles')
-                        .select('id, grand_prix_wins')
-                        .in('id', userIds);
+                if (leaderboardError) throw leaderboardError;
 
-                    if (profilesError) {
-                        console.error("Error fetching profiles:", profilesError);
-                        // Fallback to just leaderboard data if profile fetch fails
-                        setLeaders(leaderboardData);
-                    } else {
-                        // 3. Merge Data
-                        const winsMap = {};
-                        profilesData.forEach(p => {
-                            winsMap[p.id] = p.grand_prix_wins || 0;
-                        });
-
-                        const mergedData = leaderboardData.map(l => ({
-                            ...l,
-                            grand_prix_wins: winsMap[l.user_id] || 0
-                        }));
-                        setLeaders(mergedData);
-                    }
-                } else {
-                    setLeaders([]);
-                }
+                setLeaders(leaderboardData || []);
             } catch (error) {
                 console.error("Error fetching leaderboard:", error);
             } finally {

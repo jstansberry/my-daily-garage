@@ -41,7 +41,7 @@ const InfoSection = () => {
 
                 <div style={styles.footer}>
                     <p style={styles.smallText}>
-                        Daily challenges update at midnight Eastern Time and the Grand Prix ends at midnight Eastern Time.
+                        Daily challenges update at midnight Eastern Time and the Grand Prix ends at midnight Sunday Eastern Time.
                     </p>
                 </div>
             </div>
