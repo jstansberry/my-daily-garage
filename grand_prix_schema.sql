@@ -45,7 +45,8 @@ SELECT
     p.avatar_url,
     SUM(us.score) as total_score,
     COUNT(us.daily_game_id) as games_played,
-    MAX(us.completed_at) as last_played_at
+    MAX(us.completed_at) as last_played_at,
+    COALESCE(p.grand_prix_wins, 0) as grand_prix_wins
 FROM user_scores us
 JOIN profiles p ON us.user_id = p.id
 WHERE 
