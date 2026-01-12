@@ -16,6 +16,8 @@ const GrandPrixLeaderboard = ({ initialLeaderboard }) => {
                 const { data: leaderboardData, error: leaderboardError } = await supabase
                     .from('weekly_leaderboard')
                     .select('*')
+                    .select('*')
+                    .order('total_score', { ascending: false }) // Ensure sorted for ranking
                     .limit(10);
 
                 if (leaderboardError) throw leaderboardError;
@@ -88,7 +90,13 @@ const GrandPrixLeaderboard = ({ initialLeaderboard }) => {
                         <div style={styles.empty}>No drivers yet!</div>
                     ) : (
                         leaders.map((driver, index) => {
-                            const isFirst = index === 0;
+                            // Golf-style ranking: tied scores share the same rank
+                            // Rank is determined by 1 + the number of people with a strictly higher score
+                            // or simply the index of the first person with this score + 1 (since sorted).
+                            const firstIndex = leaders.findIndex(l => l.total_score === driver.total_score);
+                            const rank = firstIndex + 1;
+                            const isFirst = rank === 1;
+
                             return (
                                 <div
                                     key={driver.user_id}
@@ -101,7 +109,7 @@ const GrandPrixLeaderboard = ({ initialLeaderboard }) => {
                                         ...styles.positionBox,
                                         ...(isFirst ? styles.firstPlaceBox : {})
                                     }}>
-                                        <span style={styles.position}>{index + 1}</span>
+                                        <span style={styles.position}>{rank}</span>
                                     </div>
                                     <div style={styles.driverInfo}>
                                         <div style={styles.driverName}>
