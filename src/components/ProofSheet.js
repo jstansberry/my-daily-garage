@@ -1,4 +1,7 @@
+'use client';
+
 import React, { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase, supabaseUrl } from '../lib/supabaseClient';
 import { useAuth } from '../contexts/AuthContext';
 import ImageDisplay from './ImageDisplay';
@@ -6,14 +9,15 @@ import ImageDisplay from './ImageDisplay';
 
 const ProofSheet = () => {
     const { isAdmin, loading: authLoading, profileLoaded, session } = useAuth();
+    const router = useRouter();
 
     // Redirect non-admins
     // Redirect non-admins
     useEffect(() => {
         if (!authLoading && profileLoaded && !isAdmin) {
-            window.location.href = '/';
+            router.push('/');
         }
-    }, [isAdmin, authLoading, profileLoaded]);
+    }, [isAdmin, authLoading, profileLoaded, router]);
 
 
 

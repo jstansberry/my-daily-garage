@@ -1,4 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
+import Link from 'next/link';
 import Login from './Login';
 import HelpModal from './HelpModal';
 
@@ -9,7 +12,7 @@ const Header = () => {
         <header className="app-header">
             <div className="header-container">
                 {/* Left: Logo/Title */}
-                <a href="/" className="header-left-link">
+                <Link href="/" className="header-left-link">
                     <div className="header-left">
                         <img src="/google_logo_120.png" alt="My Daily Garage Logo" className="headerLogo" />
                         <div className="header-text">
@@ -17,7 +20,7 @@ const Header = () => {
                             <span className="header-subtitle">A new car in your garage every day!</span>
                         </div>
                     </div>
-                </a>
+                </Link>
 
                 {/* Right: Help & User Menu */}
                 <div className="header-right">
