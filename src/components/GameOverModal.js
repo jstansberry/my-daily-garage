@@ -39,69 +39,74 @@ const GameOverModal = ({ dailyCar, guesses, gameState, score, onClose }) => {
                 <button onClick={onClose} style={styles.xButton}>
                     X
                 </button>
-                <h2 style={styles.title}>
-                    {gameState === 'won' ? 'VICTORY!' : 'GAME OVER'}
-                </h2>
 
-                <div style={styles.carDisplay}>
-                    <img
-                        src={dailyCar.gameOverImageURL || dailyCar.imageUrl}
-                        alt="The Car"
-                        style={styles.image}
-                    />
-                    <div style={styles.carDetails}>
-                        <h3>{dailyCar.year} {dailyCar.make} {dailyCar.model}</h3>
-                        {dailyCar.source && (
-                            <a href={dailyCar.source} target="_blank" rel="noopener noreferrer" style={styles.sourceLink}>
-                                Source credit
-                            </a>
-                        )}
+                <div style={styles.scrollableContent}>
+                    <h2 style={styles.title}>
+                        {gameState === 'won' ? 'VICTORY!' : 'GAME OVER'}
+                    </h2>
+
+                    <div style={styles.carDisplay}>
+                        <img
+                            src={dailyCar.gameOverImageURL || dailyCar.imageUrl}
+                            alt="The Car"
+                            style={styles.image}
+                        />
+                        <div style={styles.carDetails}>
+                            <h3>{dailyCar.year} {dailyCar.make} {dailyCar.model}</h3>
+                            {dailyCar.source && (
+                                <a href={dailyCar.source} target="_blank" rel="noopener noreferrer" style={styles.sourceLink}>
+                                    Source credit
+                                </a>
+                            )}
+                        </div>
                     </div>
+
+                    <div style={styles.stats}>
+                        <div style={styles.score}>Score: {score}</div>
+                        {guesses.length > 0 && <p>Attempts: {guesses.length}/5</p>}
+                    </div>
+
+                    <button
+                        onClick={handleShare}
+                        style={{
+                            ...styles.shareButton,
+                            backgroundColor: copied ? '#4caf50' : '#e94560'
+                        }}
+                    >
+                        {copied ? 'COPIED TO CLIPBOARD!' : 'SHARE RESULT'}
+                    </button>
+
+                    {guesses.length > 0 ? (
+                        <div style={styles.resultPreview}>
+                            <h4>Result Summary:</h4>
+                            {guesses.map((guess, idx) => (
+                                <div key={idx} style={styles.previewLine}>
+                                    <span style={styles.previewNumber}>{idx + 1}.</span>
+                                    <span style={styles.previewIcons}>
+                                        {guess.isMakeCorrect ? '🟢' : '🔴'}
+                                        {guess.isModelCorrect ? '🟢' : '🔴'}
+                                        {guess.isYearCorrect ? '🟢' : '🔴'}
+                                    </span>
+                                    <span style={styles.previewText}>
+                                        {guess.make} {guess.model} {guess.year}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div style={styles.resultPreview}>
+                            <p style={{ margin: 0, color: '#ccc' }}>
+                                You have already completed the daily challenge!
+                            </p>
+                        </div>
+                    )}
                 </div>
 
-                <div style={styles.stats}>
-                    <div style={styles.score}>Score: {score}</div>
-                    {guesses.length > 0 && <p>Attempts: {guesses.length}/5</p>}
+                <div style={styles.footer}>
+                    <button onClick={onClose} style={styles.closeButton}>
+                        Close
+                    </button>
                 </div>
-
-                <button
-                    onClick={handleShare}
-                    style={{
-                        ...styles.shareButton,
-                        backgroundColor: copied ? '#4caf50' : '#e94560'
-                    }}
-                >
-                    {copied ? 'COPIED TO CLIPBOARD!' : 'SHARE RESULT'}
-                </button>
-
-                {guesses.length > 0 ? (
-                    <div style={styles.resultPreview}>
-                        <h4>Result Summary:</h4>
-                        {guesses.map((guess, idx) => (
-                            <div key={idx} style={styles.previewLine}>
-                                <span style={styles.previewNumber}>{idx + 1}.</span>
-                                <span style={styles.previewIcons}>
-                                    {guess.isMakeCorrect ? '🟢' : '🔴'}
-                                    {guess.isModelCorrect ? '🟢' : '🔴'}
-                                    {guess.isYearCorrect ? '🟢' : '🔴'}
-                                </span>
-                                <span style={styles.previewText}>
-                                    {guess.make} {guess.model} {guess.year}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div style={styles.resultPreview}>
-                        <p style={{ margin: 0, color: '#ccc' }}>
-                            You have already completed the daily challenge!
-                        </p>
-                    </div>
-                )}
-
-                <button onClick={onClose} style={styles.closeButton}>
-                    Close
-                </button>
             </div>
         </div>
     );
@@ -126,22 +131,38 @@ const styles = {
         maxWidth: '500px',
         width: '90%',
         maxHeight: '90vh',
-        overflowY: 'auto',
+        // overflowY: 'auto', // REMOVED
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         textAlign: 'center',
         border: '1px solid rgba(255, 255, 255, 0.2)',
-        position: 'relative', // For absolute positioning of X button
-        overflowX: 'hidden', // Prevent horizontal scroll
+        position: 'relative',
+        overflow: 'hidden', // Added
+    },
+    scrollableContent: {
+        flex: 1,
+        overflowY: 'auto',
+        overflowX: 'hidden', // Fix horizontal scroll
+        width: '100%',
+        paddingRight: '5px',
+        boxSizing: 'border-box', // Ensure padding doesn't add to width
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
+    footer: {
+        width: '100%',
+        marginTop: '10px',
+        paddingTop: '10px',
+        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+        display: 'flex',
+        justifyContent: 'center'
     },
     title: {
         fontSize: '2rem',
         marginBottom: '10px',
         color: '#ffffff',
-        // background: '-webkit-linear-gradient(45deg, #e94560, #a3f7bf)', (Removed gradient)
-        // WebkitBackgroundClip: 'text',
-        // WebkitTextFillColor: 'transparent',
     },
     carDisplay: {
         width: '100%',
@@ -200,8 +221,8 @@ const styles = {
     },
     previewLine: {
         display: 'flex',
-        alignItems: 'center', // Add this to align items vertically center
-        justifyContent: 'flex-start', // Change from space-between to flex-start
+        alignItems: 'center',
+        justifyContent: 'flex-start',
         marginBottom: '5px',
         fontSize: '0.9rem',
         color: '#ccc',
