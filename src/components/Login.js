@@ -6,6 +6,9 @@ import LoginModal from './LoginModal';
 const Login = () => {
     const { user, loginWithGoogle, logout, isAdmin, profile } = useAuth();
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [showPastGames, setShowPastGames] = useState(false);
+    const dropdownRef = useRef(null);
 
     // Close dropdown when clicking outside
     useEffect(() => {
