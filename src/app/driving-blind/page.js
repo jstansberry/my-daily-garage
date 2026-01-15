@@ -102,7 +102,7 @@ export default function DrivingBlindPage() {
 
             // Explicitly set initial message for new game
             setMessages([
-                { id: 'system-start', role: 'assistant', content: "THIS... is a mystery car! I'm AI Doug DeMuro, and I'm sitting right here next to you. You're blindfolded. Ask me anything about the vehicle you're in but not the make, model, or year!" }
+                { id: 'system-start', role: 'assistant', content: "THIS... is a mystery car! I'm sitting right here next to you. You're blindfolded. Ask me anything about the vehicle you're in but not the make, model, or year!" }
             ]);
             setGasTank(100);
         }
