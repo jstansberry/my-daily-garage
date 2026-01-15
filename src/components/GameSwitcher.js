@@ -10,7 +10,9 @@ const GameSwitcher = () => {
     const dropdownRef = useRef(null);
 
     // Determine current game based on path
-    const currentGame = pathname === '/daily-wager' ? 'daily-wager' : 'grand-prix';
+    let currentGame = 'grand-prix';
+    if (pathname === '/daily-wager') currentGame = 'daily-wager';
+    if (pathname === '/driving-blind') currentGame = 'driving-blind';
 
     const handleSelect = (game) => {
         setIsOpen(false);
@@ -18,6 +20,8 @@ const GameSwitcher = () => {
             router.push('/');
         } else if (game === 'daily-wager') {
             router.push('/daily-wager');
+        } else if (game === 'driving-blind') {
+            router.push('/driving-blind');
         }
     };
 
@@ -36,6 +40,11 @@ const GameSwitcher = () => {
         if (currentGame === 'daily-wager') return (
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '1.2rem' }}>💰</span> THE DAILY WAGER
+            </span>
+        );
+        if (currentGame === 'driving-blind') return (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.2rem' }}>😎</span> DRIVING BLIND
             </span>
         );
         return (
@@ -134,6 +143,29 @@ const GameSwitcher = () => {
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>THE GRAND PRIX</span>
                             <span style={{ fontSize: '0.7rem', color: '#aaa' }}>Guess the car</span>
+                        </div>
+                    </div>
+
+                    <div
+                        onClick={() => handleSelect('driving-blind')}
+                        style={{
+                            padding: '12px 20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            color: '#fff',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s',
+                            borderBottom: '1px solid rgba(255,255,255,0.05)',
+                            background: currentGame === 'driving-blind' ? 'rgba(233, 69, 96, 0.2)' : 'transparent'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = currentGame === 'driving-blind' ? 'rgba(233, 69, 96, 0.2)' : 'transparent'}
+                    >
+                        <span style={{ fontSize: '1.2rem' }}>😎</span>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>DRIVING BLIND</span>
+                            <span style={{ fontSize: '0.7rem', color: '#aaa' }}>Explore mystery car</span>
                         </div>
                     </div>
 
