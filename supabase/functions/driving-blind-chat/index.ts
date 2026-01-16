@@ -46,7 +46,7 @@ serve(async (req) => {
     }
 
     try {
-        const { messages } = await req.json();
+        const { messages, reveal } = await req.json();
 
         const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
         const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? Deno.env.get('SUPABASE_ANON_KEY') ?? '';
@@ -54,27 +54,44 @@ serve(async (req) => {
 
         const car = await getDailyCar(supabase);
 
+        // If client requested a reveal (Game Over), return the car details directly
+        if (reveal) {
+            return new Response(JSON.stringify({
+                car: {
+                    year: car.year,
+                    make: car.make,
+                    model: car.model
+                }
+            }), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+        }
+
         const systemPrompt = `
         I am blindfolded in the drivers seat of a mystery car.
         The secret car is a ${car.year} ${car.make} ${car.model}.
-        You are a knowledgable car reviewer with a no-nonsense attitude who will take on the personality characteristics of the mystery car.
+        You are a knowledgable car reviewer who will take on the personality characteristics of the mystery car.
         
-        Your goal is to help me guess the car by describing its attributes and specs, 
-        the sound of the engine, the feel of the interior, and the driving dynamics. Sometimes simple facts will suffice.
+        Your goal is to help me guess the car by describing its attributes and specs. Sometimes simple facts will suffice.
         
         RULES:
         1. DO NOT reveal the Make, Model, or Year directly but confirm if the player gets it correct.
         2. DO NOT mention other specific model names from the same manufacturer that would give it away (e.g. if it's a 911, don't say "It's like a Boxster").
-        3. If I ask a question you've already answered, politely remind me (e.g. "Create a memory score! I already told you about the headlights!").
-        4. Keep your responses SHORT (under 50 words) to keep the game moving.
-        5. If I guess correctly (Year within +/- 2 years, Make, and Model), set the "won" flag to true.
-        6. Don't reveal more than asked for - directly answer my question.
+        3. Keep your responses short (under 50 words) to keep the game moving.
+        4. If I guess correctly (Year within +/- 2 years, Make, and Model), set the "won" flag to true.
+        5. If I guess ONLY the Make correctly, set "solved_make" to the correct Make.
+        6. If I guess ONLY the Model correctly, set "solved_model" to the correct Model.
+        7. If I guess ONLY the Year correctly (within +/- 2 years), set "solved_year" to the correct Year.
+        8. Don't reveal more than asked for - directly answer my question.
 
         RESPONSE FORMAT:
-        You must return a JSON object with this structure:
+        You must return a valid JSON object with this structure and escape all quotes:
         {
             "response": "Your chat response string here",
-            "won": boolean // true if the user guessed the correct car
+            "won": boolean, // true if the user guessed the correct car (Year, Make, AND Model)
+            "solved_make": string | null,  // Set to "${car.make}" if guessed correctly, else null
+            "solved_model": string | null, // Set to "${car.model}" if guessed correctly, else null
+            "solved_year": string | null   // Set to "${car.year}" if guessed correctly, else null
         }
         `;
 
@@ -110,7 +127,7 @@ serve(async (req) => {
                     parts: [{ text: systemPrompt }]
                 },
                 generationConfig: {
-                    maxOutputTokens: 500,
+                    maxOutputTokens: 650,
                     responseMimeType: "application/json"
                 }
             })
@@ -130,7 +147,13 @@ serve(async (req) => {
         } catch (e) {
             console.error("Failed to parse JSON response:", textResponse);
             // Fallback
-            jsonResponse = { response: textResponse || "Error parsing response", won: false };
+            jsonResponse = {
+                response: textResponse || "Error parsing response",
+                won: false,
+                solved_make: null,
+                solved_model: null,
+                solved_year: null
+            };
         }
 
         return new Response(JSON.stringify(jsonResponse), {
