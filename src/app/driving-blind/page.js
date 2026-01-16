@@ -9,13 +9,14 @@ export default function DrivingBlindPage() {
     // Game State
     const [gameState, setGameState] = useState('playing'); // playing, won, lost
     const [gasTank, setGasTank] = useState(100); // 100% full
+    const [solvedAttributes, setSolvedAttributes] = useState({ make: null, model: null, year: null });
     const MAX_TURNS = 12;
 
 
 
     // Manual Chat State Management
     const [messages, setMessages] = useState([
-        { id: 'system-start', role: 'assistant', content: "THIS... is a mystery car! I'm sitting right here next to you in the passenger seat. You're blindfolded. Ask me anything about the vehicle you're in but not the make, model, or year!" }
+        { id: 'system-start', role: 'assistant', content: "THIS... is a mystery car! I'm sitting beside you in the passenger seat. You're blindfolded. Ask me anything about the vehicle you're in but not the make, model, or year!" }
     ]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -52,6 +53,24 @@ export default function DrivingBlindPage() {
                 role: 'assistant',
                 content: data.response
             }]);
+
+            // Update Solved Attributes
+            setSolvedAttributes(prev => {
+                // Only update if changed to avoid unnecessary re-renders
+                if (
+                    prev.make === data.solved_make &&
+                    prev.model === data.solved_model &&
+                    prev.year === data.solved_year
+                ) {
+                    return prev;
+                }
+
+                const newState = { ...prev };
+                if (data.solved_make) newState.make = data.solved_make;
+                if (data.solved_model) newState.model = data.solved_model;
+                if (data.solved_year) newState.year = data.solved_year;
+                return newState;
+            });
 
             // Check for win
             if (data.won) {
@@ -90,38 +109,100 @@ export default function DrivingBlindPage() {
         await sendMessage({ id: Date.now().toString(), role: 'user', content: currentInput });
     };
 
+    const [isLoaded, setIsLoaded] = useState(false);
+
     // Load State from LocalStorage on mount
     useEffect(() => {
-        const savedMessages = localStorage.getItem('driving-blind-messages');
-        const savedGas = localStorage.getItem('driving-blind-gas');
-        const savedDate = localStorage.getItem('driving-blind-date');
-        const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+        try {
+            const savedMessages = localStorage.getItem('driving-blind-messages');
+            const savedGas = localStorage.getItem('driving-blind-gas');
+            const savedDate = localStorage.getItem('driving-blind-date');
+            const savedAttributes = localStorage.getItem('driving-blind-attributes');
 
-        if (savedDate === today) {
-            if (savedMessages) setMessages(JSON.parse(savedMessages));
-            if (savedGas) setGasTank(parseFloat(savedGas));
-        } else {
-            // New Day, Reset
-            localStorage.setItem('driving-blind-date', today);
-            localStorage.removeItem('driving-blind-messages');
-            localStorage.removeItem('driving-blind-gas');
+            const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
 
-            // Explicitly set initial message for new game
-            setMessages([
-                { id: 'system-start', role: 'assistant', content: "THIS... is a mystery car! I'm sitting right here next to you. You're blindfolded. Ask me anything about the vehicle you're in but not the make, model, or year!" }
-            ]);
-            setGasTank(100);
+            if (savedDate === today) {
+                if (savedMessages) {
+                    try {
+                        const parsed = JSON.parse(savedMessages);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            setMessages(parsed);
+                        }
+                    } catch (e) {
+                        console.error("Failed to parse saved messages", e);
+                    }
+                }
+                if (savedGas) setGasTank(parseFloat(savedGas));
+                if (savedAttributes) {
+                    try {
+                        const parsedAttrs = JSON.parse(savedAttributes);
+                        setSolvedAttributes(parsedAttrs);
+                    } catch (e) {
+                        console.error("Failed to parse saved attributes", e);
+                    }
+                }
+            } else {
+                // New Day, Reset
+                localStorage.setItem('driving-blind-date', today);
+                // Clear state in LS
+                localStorage.removeItem('driving-blind-messages');
+                localStorage.removeItem('driving-blind-gas');
+                localStorage.removeItem('driving-blind-attributes');
+
+                // Reset State in Memory
+                setMessages([
+                    { id: 'system-start', role: 'assistant', content: "THIS... is a mystery car! I'm sitting beside you in the passenger seat. You're blindfolded. Ask me anything about the vehicle you're in but not the make, model, or year!" }
+                ]);
+                setGasTank(100);
+                setSolvedAttributes({ make: null, model: null, year: null });
+            }
+        } catch (error) {
+            console.error("LocalStorage Error:", error);
+        } finally {
+            setIsLoaded(true);
         }
     }, []);
 
     // Save State to LocalStorage on change
     useEffect(() => {
+        // Only save if we have finished loading to prevent overwriting with initial state
+        if (!isLoaded) return;
+
         if (messages.length > 0) {
             localStorage.setItem('driving-blind-messages', JSON.stringify(messages));
             localStorage.setItem('driving-blind-gas', gasTank.toString());
+            localStorage.setItem('driving-blind-attributes', JSON.stringify(solvedAttributes));
         }
-    }, [messages, gasTank]);
+    }, [messages, gasTank, solvedAttributes, isLoaded]);
 
+
+
+    const [revealedCar, setRevealedCar] = useState(null);
+
+    // Fetch revealed car on Game Over
+    useEffect(() => {
+        if (gasTank <= 0 && !revealedCar) {
+            const fetchReveal = async () => {
+                try {
+                    const response = await fetch(edgeFunctionUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${supabaseAnonKey}`
+                        },
+                        body: JSON.stringify({ reveal: true })
+                    });
+                    const data = await response.json();
+                    if (data.car) {
+                        setRevealedCar(data.car);
+                    }
+                } catch (error) {
+                    console.error("Error fetching reveal:", error);
+                }
+            };
+            fetchReveal();
+        }
+    }, [gasTank, revealedCar, edgeFunctionUrl]);
 
 
     // Auto-scroll ref
@@ -177,8 +258,7 @@ export default function DrivingBlindPage() {
                 {gameState === 'won' ? (
                     <div style={styles.victory}>
                         <h3>VICTORY!</h3>
-                        <p>You correctly guessed the car!</p>
-                        <button onClick={() => window.location.reload()} style={styles.playAgainButton}>Play Again Tomorrow</button>
+                        <p style={{ color: 'black' }}>You correctly guessed the car!</p>
                     </div>
                 ) : gameState === 'playing' && gasTank > 0 ? (
                     <form onSubmit={(e) => {
@@ -205,7 +285,10 @@ export default function DrivingBlindPage() {
                     </form>
                 ) : (
                     <div style={styles.gameOver}>
-                        {gasTank <= 0 ? "OUT OF GAS!" : "GAME OVER"}
+                        <h3>OUT OF GAS!</h3>
+                        {revealedCar && (
+                            <p>The car was a {revealedCar.year} {revealedCar.make} {revealedCar.model}</p>
+                        )}
                     </div>
                 )}
             </div>
@@ -217,8 +300,25 @@ export default function DrivingBlindPage() {
                     <div style={{ ...styles.gaugeFill, width: `${gasTank}%`, backgroundColor: gasTank < 20 ? 'red' : '#4caf50' }} />
                 </div>
             </div>
+
+            {/* Progress Badges */}
+            <div style={styles.badgesContainer}>
+                <div style={{ ...styles.badge, borderColor: solvedAttributes.year ? '#4caf50' : '#444' }}>
+                    <div style={styles.badgeLabel}>YEAR</div>
+                    <div style={styles.badgeValue}>{solvedAttributes.year || '???'}</div>
+                </div>
+                <div style={{ ...styles.badge, borderColor: solvedAttributes.make ? '#4caf50' : '#444' }}>
+                    <div style={styles.badgeLabel}>MAKE</div>
+                    <div style={styles.badgeValue}>{solvedAttributes.make || '???'}</div>
+                </div>
+                <div style={{ ...styles.badge, borderColor: solvedAttributes.model ? '#4caf50' : '#444' }}>
+                    <div style={styles.badgeLabel}>MODEL</div>
+                    <div style={styles.badgeValue}>{solvedAttributes.model || '???'}</div>
+                </div>
+            </div>
         </div>
     );
+
 }
 
 const styles = {
@@ -327,22 +427,39 @@ const styles = {
         background: '#4caf50',
         borderRadius: '8px',
         fontWeight: 'bold',
+        color: 'black',
     },
-    playAgainButton: {
-        marginTop: '10px',
-        padding: '10px 20px',
-        borderRadius: '8px',
-        border: 'none',
-        background: 'white',
-        color: '#4caf50',
-        fontWeight: 'bold',
-        cursor: 'pointer',
-    },
+
     gameOver: {
         textAlign: 'center',
         padding: '15px',
         background: '#e94560',
         borderRadius: '8px',
+        fontWeight: 'bold',
+    },
+    badgesContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        gap: '10px',
+        width: '100%',
+    },
+    badge: {
+        flex: 1,
+        border: '2px solid #444',
+        borderRadius: '8px',
+        padding: '10px',
+        textAlign: 'center',
+        background: '#222',
+        transition: 'all 0.3s ease',
+    },
+    badgeLabel: {
+        fontSize: '0.7rem',
+        color: '#aaa',
+        marginBottom: '5px',
+        fontWeight: 'bold',
+    },
+    badgeValue: {
+        fontSize: '0.9rem',
         fontWeight: 'bold',
     }
 };
