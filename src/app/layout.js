@@ -3,13 +3,12 @@ import Header from '../components/Header';
 import InfoSection from '../components/InfoSection';
 import { Analytics } from '@vercel/analytics/react';
 import { Providers } from './providers';
+import CookieConsent from '../components/CookieConsent';
 
 export const metadata = {
     title: 'My Daily Garage: the daily guessing game',
     description: '5 guesses to nail the auto down. Each guess zooms out on the main image.',
 };
-
-import CookieConsent from '../components/CookieConsent';
 
 export default function RootLayout({ children }) {
     return (

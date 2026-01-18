@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 // import { useChat } from '@ai-sdk/react'; // Removing to use custom fetch
-import { supabase, supabaseUrl, supabaseAnonKey } from '../../lib/supabaseClient';
+import { supabaseUrl, supabaseAnonKey } from '../../lib/supabaseClient';
 
 
 const INITIAL_SYSTEM_MESSAGE = "You're blindfolded sitting in a mystery vehicle! Ask me anything about it but I won't tell you the make, model, or year unless you guess it correctly!";
