@@ -310,17 +310,32 @@ export default function DrivingBlindPage() {
 
             {/* Progress Badges */}
             <div style={styles.badgesContainer}>
-                <div style={{ ...styles.badge, borderColor: solvedAttributes.year ? '#2563EB' : '#E5E7EB' }}>
+                <div style={{
+                    ...styles.badge,
+                    ...(solvedAttributes.year ? styles.solvedBadge : { borderColor: '#E5E7EB' })
+                }}>
                     <div style={styles.badgeLabel}>YEAR</div>
-                    <div style={styles.badgeValue}>{solvedAttributes.year || '???'}</div>
+                    <div style={{ ...styles.badgeValue, ...(solvedAttributes.year ? styles.solvedBadgeValue : {}) }}>
+                        {solvedAttributes.year || '???'}
+                    </div>
                 </div>
-                <div style={{ ...styles.badge, borderColor: solvedAttributes.make ? '#2563EB' : '#E5E7EB' }}>
+                <div style={{
+                    ...styles.badge,
+                    ...(solvedAttributes.make ? styles.solvedBadge : { borderColor: '#E5E7EB' })
+                }}>
                     <div style={styles.badgeLabel}>MAKE</div>
-                    <div style={styles.badgeValue}>{solvedAttributes.make || '???'}</div>
+                    <div style={{ ...styles.badgeValue, ...(solvedAttributes.make ? styles.solvedBadgeValue : {}) }}>
+                        {solvedAttributes.make || '???'}
+                    </div>
                 </div>
-                <div style={{ ...styles.badge, borderColor: solvedAttributes.model ? '#2563EB' : '#E5E7EB' }}>
+                <div style={{
+                    ...styles.badge,
+                    ...(solvedAttributes.model ? styles.solvedBadge : { borderColor: '#E5E7EB' })
+                }}>
                     <div style={styles.badgeLabel}>MODEL</div>
-                    <div style={styles.badgeValue}>{solvedAttributes.model || '???'}</div>
+                    <div style={{ ...styles.badgeValue, ...(solvedAttributes.model ? styles.solvedBadgeValue : {}) }}>
+                        {solvedAttributes.model || '???'}
+                    </div>
                 </div>
             </div>
         </div>
@@ -335,7 +350,6 @@ const styles = {
         padding: '20px',
         fontFamily: 'Inter, sans-serif',
         color: 'white',
-        minHeight: '100vh',
     },
     header: {
         textAlign: 'center',
@@ -467,6 +481,11 @@ const styles = {
         transition: 'all 0.3s ease',
         boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
     },
+    solvedBadge: {
+        border: '1px solid #4caf50',
+        backgroundColor: '#e8f5e9',
+        color: '#2e7d32'
+    },
     badgeLabel: {
         fontSize: '0.75rem',
         color: '#6B7280',
@@ -479,5 +498,8 @@ const styles = {
         fontWeight: 'bold',
         color: '#1F2937',
     },
+    solvedBadgeValue: {
+        color: '#2e7d32'
+    }
 
 };
