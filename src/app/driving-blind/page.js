@@ -281,7 +281,12 @@ export default function DrivingBlindPage() {
                             maxLength={100}
                             style={styles.textInput}
                         />
-                        <button type="submit" style={styles.sendButton} disabled={isLoading || !input.trim()}>
+                        <button
+                            type="submit"
+                            style={styles.sendButton}
+                            disabled={isLoading || !input.trim()}
+                            onMouseDown={(e) => e.preventDefault()} // Prevent focus loss
+                        >
                             SEND
                         </button>
                     </form>
