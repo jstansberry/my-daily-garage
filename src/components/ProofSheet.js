@@ -40,7 +40,6 @@ const ProofSheet = () => {
     const [puzzles, setPuzzles] = useState([]);
     const [makes, setMakes] = useState([]);
     const [models, setModels] = useState([]);
-    const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
 
     // Date Filters
     // Helper to get YYYY-MM-DD in NY timezone
@@ -89,21 +88,7 @@ const ProofSheet = () => {
             .sort((a, b) => new Date(a.date) - new Date(b.date));
     }, [puzzles, filterStartDate, filterEndDate]);
 
-    // Memoize the distribution summary
-    const distributionSummary = useMemo(() => {
-        const counts = filteredPuzzles.reduce((acc, car) => {
-            const key = `${car.make}|${car.model}`;
-            acc[key] = (acc[key] || 0) + 1;
-            return acc;
-        }, {});
 
-        return Object.entries(counts)
-            .sort((a, b) => b[1] - a[1]) // Sort by count descending
-            .map(([key, count]) => {
-                const [make, model] = key.split('|');
-                return { make, model, count };
-            });
-    }, [filteredPuzzles]);
 
     useEffect(() => {
         if (isAdmin) {
@@ -426,6 +411,17 @@ const ProofSheet = () => {
                     >
                         Reset to Next 30 Days
                     </button>
+                    <button
+                        onClick={() => {
+                            setShowAddForm(true);
+                            setIsEditing(null);
+                            resetForm();
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        style={styles.addButton}
+                    >
+                        + Add New Daily Car
+                    </button>
                     <span style={{ marginLeft: 'auto', color: '#000', alignSelf: 'center', fontWeight: 'bold' }}>
                         {filteredPuzzles.length} results
                     </span>
@@ -682,57 +678,7 @@ const ProofSheet = () => {
                 ))}
             </div>
 
-            <div style={styles.adminControls}>
-                <button
-                    onClick={() => {
-                        setShowAddForm(true);
-                        setIsEditing(null);
-                        resetForm();
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    style={styles.addButton}
-                >
-                    + Add New Daily Car
-                </button>
-            </div>
 
-            <section style={styles.summarySection}>
-                <div
-                    onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
-                    style={{ ...styles.subTitle, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
-                >
-                    Car Distribution Summary
-                    <span style={{ fontSize: '0.8rem', color: '#a3f7bf' }}>
-                        {isSummaryExpanded ? '▼' : '▶'}
-                    </span>
-                </div>
-
-                {isSummaryExpanded && (
-                    <table style={styles.table}>
-                        <thead>
-                            <tr>
-                                <th style={styles.th}>Make</th>
-                                <th style={styles.th}>Model</th>
-                                <th style={styles.th}>Count</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {distributionSummary.map((item, idx) => {
-                                const key = `${item.make}|${item.model}`;
-                                return (
-                                    <tr key={key} style={styles.tr}>
-                                        <td style={styles.td}>{item.make}</td>
-                                        <td style={styles.td}>{item.model}</td>
-                                        <td style={{ ...styles.td, fontWeight: 'bold', color: item.count > 3 ? '#e94560' : '#ccc' }}>
-                                            {item.count}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                )}
-            </section>
         </div >
     );
 };

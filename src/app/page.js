@@ -46,7 +46,8 @@ async function getLeaderboard() {
     const { data, error } = await supabase
         .from('weekly_leaderboard')
         .select('*')
-        .limit(10);
+        .order('total_score', { ascending: false })
+        .limit(20);
 
     if (error) {
         console.error("Error fetching leaderboard:", error);
