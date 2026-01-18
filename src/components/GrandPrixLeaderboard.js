@@ -18,7 +18,6 @@ const GrandPrixLeaderboard = ({ initialLeaderboard }) => {
                 const { data: leaderboardData, error: leaderboardError } = await supabase
                     .from('weekly_leaderboard')
                     .select('*')
-                    .select('*')
                     .order('total_score', { ascending: false }) // Ensure sorted for ranking
                     .limit(20);
 

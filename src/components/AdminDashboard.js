@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import ProofSheet from './ProofSheet';
 import DailyWagerAdmin from './DailyWagerAdmin';
+import DrivingBlindAdmin from './DrivingBlindAdmin';
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('grand-prix');
 
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-            <h1 style={{ marginBottom: '20px', textAlign: 'center' }}>Admin Dashboard</h1>
+            <h2 style={{ marginBottom: '20px', textAlign: 'center' }}>Admin Dashboard</h2>
 
             <div style={{
                 display: 'flex',
@@ -48,11 +49,27 @@ const AdminDashboard = () => {
                 >
                     Daily Wager
                 </button>
+                <button
+                    onClick={() => setActiveTab('driving-blind')}
+                    style={{
+                        background: activeTab === 'driving-blind' ? 'var(--primary-color)' : 'transparent',
+                        border: '1px solid var(--glass-border)',
+                        color: '#fff',
+                        padding: '10px 20px',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        transition: 'all 0.3s ease'
+                    }}
+                >
+                    Driving Blind
+                </button>
             </div>
 
             <div className="admin-content">
                 {activeTab === 'grand-prix' && <ProofSheet />}
                 {activeTab === 'dailywager' && <DailyWagerAdmin />}
+                {activeTab === 'driving-blind' && <DrivingBlindAdmin />}
             </div>
         </div>
     );

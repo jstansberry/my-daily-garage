@@ -9,8 +9,9 @@ const InfoSection = () => {
                 <div style={styles.block}>
                     <p style={styles.text}>
                         Welcome to <strong>My Daily Garage</strong>, the ultimate destination for automotive enthusiasts.
-                        We offer a <strong>suite of games oriented around car culture</strong>, designed to test your knowledge and market intuition.
-                        From visual identification in "The Grand Prix" to valuation skills in "The Daily Wager", there is a challenge for every gearhead.
+                        We offer a <strong>suite of 3 daily games oriented around car culture</strong>, designed to test your knowledge and market intuition.
+                        From visual identification in "The Grand Prix", valuation skills in "The Daily Wager", to blindfolded guessing in "Driving Blind",
+                        there is a challenge for every gearhead.
                     </p>
                 </div>
 
@@ -38,10 +39,10 @@ const InfoSection = () => {
                 </div>
 
                 <div style={styles.block}>
-                    <h3 style={styles.subHeading}>A Suite of Automotive Challenges</h3>
+                    <h3 style={styles.subHeading}>A Suite of 3 Automotive Challenges</h3>
                     <p style={styles.text}>
                         We offer a variety of games designed to test different aspects of your gearhead knowledge.
-                        Whether it’s visual identification or market price prediction, My Daily Garage is the ultimate playground for car lovers.
+                        Whether it’s visual identification, market price prediction, or mystery car guessing, My Daily Garage is the ultimate playground for car lovers.
                     </p>
                 </div>
 
