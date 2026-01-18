@@ -55,6 +55,19 @@ const HelpModal = ({ onClose }) => {
                             <li><strong>Tie-Breaker:</strong> If two guesses are equally close, the lower guess wins. If still tied, the earlier guess wins.</li>
                         </ul>
                     </div>
+
+                    <div style={styles.divider} />
+
+                    <div style={styles.section}>
+                        <h3 style={styles.sectionTitle}>Driving Blind</h3>
+                        <p>You are blindfolded inside a mystery car. Ask the AI questions to figure out what you are driving!</p>
+                        <ul>
+                            <li><strong>Objective:</strong> Identify the Make, Model, and Year of the car.</li>
+                            <li><strong>Gameplay:</strong> Ask specific questions about the car's features, history, or performance. The AI will answer, but won't just give you the name!</li>
+                            <li><strong>Gas Tank:</strong> Every question uses up gas. You have 12 turns before you run out of fuel!</li>
+                            <li><strong>Winning:</strong> Correctly identify all three attributes (Make, Model, Year) to win.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

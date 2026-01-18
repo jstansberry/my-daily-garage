@@ -6,6 +6,7 @@ import Login from './Login';
 import HelpModal from './HelpModal';
 
 import GameSwitcher from './GameSwitcher';
+import VenmoButton from './VenmoButton';
 
 const Header = () => {
     const [showHelp, setShowHelp] = useState(false);
@@ -26,6 +27,7 @@ const Header = () => {
 
                 {/* Right: Help & User Menu */}
                 <div className="header-right">
+                    <VenmoButton />
                     <GameSwitcher />
                     <button
                         style={{

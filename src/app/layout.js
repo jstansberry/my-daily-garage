@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import InfoSection from '../components/InfoSection';
 import { Analytics } from '@vercel/analytics/react';
 import { Providers } from './providers';
+import CookieConsent from '../components/CookieConsent';
 
 export const metadata = {
     title: 'My Daily Garage: the daily guessing game',
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
                             </div>
                         </footer>
                     </div>
+                    <CookieConsent />
                 </Providers>
             </body>
         </html>

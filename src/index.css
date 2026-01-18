@@ -463,3 +463,13 @@ input[type=number] {
     justify-content: center;
   }
 }
+/* Venmo Button Responsiveness */
+.venmo-text {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .venmo-text {
+    display: inline;
+  }
+}
