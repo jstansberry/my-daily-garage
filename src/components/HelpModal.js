@@ -64,7 +64,7 @@ const HelpModal = ({ onClose }) => {
                         <ul>
                             <li><strong>Objective:</strong> Identify the Make, Model, and Year of the car.</li>
                             <li><strong>Gameplay:</strong> Ask specific questions about the car's features, history, or performance. The AI will answer, but won't just give you the name!</li>
-                            <li><strong>Gas Tank:</strong> Every question uses up gas. You have 12 turns before you run out of fuel!</li>
+                            <li><strong>Gas Tank:</strong> Every question uses up gas. You have 16 turns before you run out of fuel!</li>
                             <li><strong>Winning:</strong> Correctly identify all three attributes (Make, Model, Year) to win.</li>
                         </ul>
                     </div>

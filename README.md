@@ -1,4 +1,4 @@
-# My Daily Garage: the daily guessing game
+# My Daily Garage: the daily vehicle guessing game
 
 5 guesses to nail the auto down. Each guess zooms out on the main image.
 
