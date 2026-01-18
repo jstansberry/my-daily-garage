@@ -9,6 +9,8 @@ export const metadata = {
     description: '5 guesses to nail the auto down. Each guess zooms out on the main image.',
 };
 
+import CookieConsent from '../components/CookieConsent';
+
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
@@ -30,6 +32,7 @@ export default function RootLayout({ children }) {
                             </div>
                         </footer>
                     </div>
+                    <CookieConsent />
                 </Providers>
             </body>
         </html>

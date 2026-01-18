@@ -4,7 +4,7 @@ const TermsOfService = () => {
     return (
         <div style={styles.container} className="glass-panel">
             <h1 style={styles.title}>Terms of Service</h1>
-            <p style={styles.date}>Last Updated: January 16, 2026</p>
+            <p style={styles.date}>Last Updated: January 18, 2026</p>
 
             <section style={styles.section}>
                 <h2 style={styles.heading}>1. Acceptance of Terms</h2>
@@ -33,12 +33,18 @@ const TermsOfService = () => {
             </section>
 
             <section style={styles.section}>
-                <h2 style={styles.heading}>5. Limitation of Liability</h2>
-                <p>In no event shall The Stansberry Group - My Daily Garage be liable for any damages of any kind arising from the use of this site, including but not limited to direct, indirect, incidental, punitive, and consequential damages.</p>
+                <h2 style={styles.heading}>5. Advertisements and Third-Party Links</h2>
+                <p>My Daily Garage may display advertisements from third-party networks, such as Google AdSense. We do not endorse or guarantee the products or services advertised. Your interactions with these ads are solely between you and the advertiser.</p>
+                <p>The site may also contain links to external sites that are not operated by us. We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.</p>
             </section>
 
             <section style={styles.section}>
-                <h2 style={styles.heading}>6. Contact Information</h2>
+                <h2 style={styles.heading}>6. Limitation of Liability</h2>
+                <p>In no event shall The Stansberry Group - My Daily Garage, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Service; (ii) any conduct or content of any third party on the Service; (iii) any content obtained from the Service; and (iv) unauthorized access, use or alteration of your transmissions or content.</p>
+            </section>
+
+            <section style={styles.section}>
+                <h2 style={styles.heading}>7. Contact Information</h2>
                 <p>If you have any questions about these Terms of Service, please contact us at <a href="mailto:support@mydailygarage.com" style={styles.link}>support@mydailygarage.com</a>.</p>
             </section>
         </div>

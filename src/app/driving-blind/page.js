@@ -12,7 +12,7 @@ export default function DrivingBlindPage() {
     const [gameState, setGameState] = useState('playing'); // playing, won, lost
     const [gasTank, setGasTank] = useState(100); // 100% full
     const [solvedAttributes, setSolvedAttributes] = useState({ make: null, model: null, year: null });
-    const MAX_TURNS = 12;
+    const MAX_TURNS = 16;
 
 
 
@@ -334,7 +334,7 @@ const styles = {
     },
     header: {
         textAlign: 'center',
-        marginBottom: '20px',
+        marginBottom: '10px',
     },
     subHeader: {
         margin: 0,
@@ -342,7 +342,7 @@ const styles = {
         fontStyle: 'italic',
     },
     gaugeContainer: {
-        marginBottom: '15px',
+        marginBottom: '5px',
         background: '#222',
         padding: '10px',
         borderRadius: '8px',
@@ -369,7 +369,7 @@ const styles = {
         background: '#FFFFFF',
         borderRadius: '12px',
         padding: '20px',
-        marginBottom: '20px',
+        marginBottom: '10px',
         border: '1px solid #E5E7EB',
         boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
     },
@@ -389,7 +389,7 @@ const styles = {
         marginRight: '8px',
     },
     inputArea: {
-        marginBottom: '30px',
+        marginBottom: '10px',
     },
     chatForm: {
         display: 'flex',
@@ -450,7 +450,7 @@ const styles = {
         justifyContent: 'space-between',
         gap: '12px',
         width: '100%',
-        marginTop: '20px',
+        marginTop: '10px',
     },
     badge: {
         flex: 1,

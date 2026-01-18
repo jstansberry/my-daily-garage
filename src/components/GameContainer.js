@@ -29,10 +29,19 @@ const GameContainer = ({ initialDailyCar }) => {
     // to prevent it popping up on every window focus/re-render.
     const hasAutoShownModal = useRef(false);
 
+    // Audio ref
+    const audioRef = useRef(null);
+
     // Track last fetched params to prevent duplicate fetches in Strict Mode
     const lastFetchedParamsRef = useRef(null);
 
     const prevUserIdRef = useRef(user ? user.id : 'anon');
+
+    useEffect(() => {
+        // Preload audio
+        audioRef.current = new Audio('/success_chime.mp3');
+        audioRef.current.preload = 'auto';
+    }, []);
 
     // Derived state for solved fields
     const solved = React.useMemo(() => {
@@ -350,6 +359,22 @@ const GameContainer = ({ initialDailyCar }) => {
             const finalScore = calculateScore(newGuesses);
             setUserScore(finalScore);
             saveScore(finalScore);
+
+            // Play success chime
+            if (audioRef.current) {
+                console.log("Attempting to play win sound...");
+                audioRef.current.currentTime = 0;
+                const playPromise = audioRef.current.play();
+
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => console.log("Win sound playing!"))
+                        .catch(e => console.error("Win sound failed to play:", e));
+                }
+            } else {
+                console.warn("Audio ref not initialized");
+            }
+
             setTimeout(() => {
                 setShowModal(true);
                 hasAutoShownModal.current = true;

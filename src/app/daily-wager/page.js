@@ -17,9 +17,15 @@ const DailyWagerPage = () => {
         setLoading(true);
         try {
             // 1. Fetch Active or Recently Settled Auctions
+            // Filter: Hide auctions that ended more than 3 days ago
+            const threeDaysAgo = new Date();
+            threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+            const cutoff = threeDaysAgo.toISOString();
+
             const { data: aucData, error: aucError } = await supabase
                 .from('daily_wager_auctions')
                 .select('*')
+                .gte('auction_end_time', cutoff)
                 .order('auction_end_time', { ascending: true });
 
             if (aucError) throw aucError;
