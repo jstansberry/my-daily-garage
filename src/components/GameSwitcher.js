@@ -39,7 +39,7 @@ const GameSwitcher = () => {
     const getCurrentLabel = () => {
         if (currentGame === 'daily-wager') return (
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.2rem' }}>💰</span> THE DAILY WAGER
+                <span style={{ fontSize: '1.2rem' }}>💰</span> DAILY WAGER
             </span>
         );
         if (currentGame === 'driving-blind') return (
@@ -49,7 +49,7 @@ const GameSwitcher = () => {
         );
         return (
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.2rem' }}>🏁</span> THE GRAND PRIX
+                <span style={{ fontSize: '1.2rem' }}>🏁</span> GRAND PRIX
             </span>
         );
     };
@@ -134,7 +134,7 @@ const GameSwitcher = () => {
                     >
                         <span style={{ fontSize: '1.2rem' }}>🏁</span>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>THE GRAND PRIX</span>
+                            <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>GRAND PRIX</span>
                             <span style={{ fontSize: '0.7rem', color: '#999' }}>Guess the car</span>
                         </div>
                     </div>
@@ -178,7 +178,7 @@ const GameSwitcher = () => {
                     >
                         <span style={{ fontSize: '1.2rem' }}>💰</span>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>THE DAILY WAGER</span>
+                            <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>DAILY WAGER</span>
                             <span style={{ fontSize: '0.7rem', color: '#999' }}>Guess the price</span>
                         </div>
                     </div>

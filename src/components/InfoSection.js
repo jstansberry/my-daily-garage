@@ -10,7 +10,7 @@ const InfoSection = () => {
                     <p style={styles.text}>
                         Welcome to <strong>My Daily Garage</strong>, the ultimate destination for automotive enthusiasts.
                         We offer a <strong>suite of 3 daily games oriented around car culture</strong>, designed to test your knowledge and market intuition.
-                        From visual identification in "The Grand Prix", valuation skills in "The Daily Wager", to blindfolded guessing in "Driving Blind",
+                        From visual identification in "Grand Prix", valuation skills in "Daily Wager", to blindfolded guessing in "Driving Blind",
                         there is a challenge for every gearhead.
                     </p>
                 </div>

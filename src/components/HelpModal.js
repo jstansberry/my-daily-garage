@@ -10,7 +10,7 @@ const HelpModal = ({ onClose }) => {
 
                 <div style={styles.scrollContainer}>
                     <div style={styles.section}>
-                        <h3 style={styles.sectionTitle}>The Grand Prix</h3>
+                        <h3 style={styles.sectionTitle}>Grand Prix</h3>
                         <p>The Grand Prix is our weekly competition. Guess the car in 5 attempts</p>
                         <ul>
                             <li><strong>Schedule:</strong> Runs from Monday to Sunday.</li>
@@ -40,7 +40,7 @@ const HelpModal = ({ onClose }) => {
                     <div style={styles.divider} />
 
                     <div style={styles.section}>
-                        <h3 style={styles.sectionTitle}>The Daily Wager</h3>
+                        <h3 style={styles.sectionTitle}>Daily Wager</h3>
                         <p>Predict the final sale price of real automotive auctions.</p>
                         <ul>
                             <li><strong>Objective:</strong> Guess the closest final bid amount.</li>
@@ -64,7 +64,7 @@ const HelpModal = ({ onClose }) => {
                         <ul>
                             <li><strong>Objective:</strong> Identify the Make, Model, and Year of the car.</li>
                             <li><strong>Gameplay:</strong> Ask specific questions about the car's features, history, or performance. The AI will answer, but won't just give you the name!</li>
-                            <li><strong>Gas Tank:</strong> Every question uses up gas. You have 12 turns before you run out of fuel!</li>
+                            <li><strong>Gas Tank:</strong> Every question uses up gas. You have 16 turns before you run out of fuel!</li>
                             <li><strong>Winning:</strong> Correctly identify all three attributes (Make, Model, Year) to win.</li>
                         </ul>
                     </div>

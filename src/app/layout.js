@@ -6,8 +6,8 @@ import { Providers } from './providers';
 import CookieConsent from '../components/CookieConsent';
 
 export const metadata = {
-    title: 'My Daily Garage: the daily guessing game',
-    description: '5 guesses to nail the auto down. Each guess zooms out on the main image.',
+    title: 'My Daily Garage: the daily vehicle guessing game',
+    description: 'Multiple games, each with a new car every day!',
 };
 
 export default function RootLayout({ children }) {
