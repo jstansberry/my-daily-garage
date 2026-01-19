@@ -10,7 +10,7 @@ const HelpModal = ({ onClose }) => {
 
                 <div style={styles.scrollContainer}>
                     <div style={styles.section}>
-                        <h3 style={styles.sectionTitle}>The Grand Prix</h3>
+                        <h3 style={styles.sectionTitle}>Grand Prix</h3>
                         <p>The Grand Prix is our weekly competition. Guess the car in 5 attempts</p>
                         <ul>
                             <li><strong>Schedule:</strong> Runs from Monday to Sunday.</li>
@@ -40,7 +40,7 @@ const HelpModal = ({ onClose }) => {
                     <div style={styles.divider} />
 
                     <div style={styles.section}>
-                        <h3 style={styles.sectionTitle}>The Daily Wager</h3>
+                        <h3 style={styles.sectionTitle}>Daily Wager</h3>
                         <p>Predict the final sale price of real automotive auctions.</p>
                         <ul>
                             <li><strong>Objective:</strong> Guess the closest final bid amount.</li>
