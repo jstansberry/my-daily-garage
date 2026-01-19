@@ -113,7 +113,7 @@ const styles = {
         maxWidth: '350px',
         backgroundColor: '#FFFFFF',
         border: '1px solid #E5E7EB',
-        borderRadius: '12px',
+        borderRadius: '10px',
         overflow: 'hidden',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         fontFamily: "'Roboto Condensed', sans-serif",
@@ -214,7 +214,7 @@ const styles = {
         backgroundColor: '#EFF6FF', // Light Blue
         color: '#2563EB', // Royal Blue
         padding: '4px 8px',
-        borderRadius: '6px',
+        borderRadius: '10px',
         fontWeight: 'bold',
         fontSize: '0.9rem',
         minWidth: '40px',

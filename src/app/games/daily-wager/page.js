@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { supabase } from '../../lib/supabaseClient';
-import { useAuth } from '../../contexts/AuthContext';
-import DailyWagerCard from '../../components/DailyWagerCard';
-import DailyWagerLeaderboard from '../../components/DailyWagerLeaderboard';
+import { supabase } from '../../../lib/supabaseClient';
+import { useAuth } from '../../../contexts/AuthContext';
+import DailyWagerCard from '../../../components/DailyWagerCard';
+import DailyWagerLeaderboard from '../../../components/DailyWagerLeaderboard';
+import GameLayout from '../../../components/GameLayout';
 
 const DailyWagerPage = () => {
     const { user } = useAuth();
@@ -97,34 +98,48 @@ const DailyWagerPage = () => {
     }, [fetchUserGuesses]);
 
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-
-
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px' }}>
-                {/* Main Column: Auctions */}
-                <div style={{ flex: '1 1 600px' }}>
-                    {loading && <p style={{ textAlign: 'center' }}>Loading Auctions...</p>}
-                    {!loading && auctions.length === 0 && <p style={{ textAlign: 'center' }}>No active auctions right now.</p>}
-
-                    {auctions.map(auction => (
-                        <DailyWagerCard
-                            key={auction.id}
-                            auction={auction}
-                            userGuessId={userGuesses[auction.id]?.id}
-                            initialGuess={userGuesses[auction.id]}
-                            winnerData={resultsMap[auction.id]}
-                            onGuessSubmit={handleGuessSubmit}
-                        />
-                    ))}
+        <GameLayout title="The Daily Wager">
+            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+                <div style={styles.header}>
+                    <p style={styles.subHeader}>Guess the final auction price!</p>
                 </div>
 
-                {/* Sidebar: Leaderboard */}
-                <div style={{ flex: '0 0 320px' }}>
-                    <DailyWagerLeaderboard />
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px' }}>
+                    {/* Main Column: Auctions */}
+                    <div style={{ flex: '1 1 600px' }}>
+                        {loading && <p style={{ textAlign: 'center' }}>Loading Auctions...</p>}
+                        {!loading && auctions.length === 0 && <p style={{ textAlign: 'center' }}>No active auctions right now.</p>}
+
+                        {auctions.map(auction => (
+                            <DailyWagerCard
+                                key={auction.id}
+                                auction={auction}
+                                userGuessId={userGuesses[auction.id]?.id}
+                                initialGuess={userGuesses[auction.id]}
+                                winnerData={resultsMap[auction.id]}
+                                onGuessSubmit={handleGuessSubmit}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Sidebar: Leaderboard */}
+                    <div style={{ flex: '0 0 320px' }}>
+                        <DailyWagerLeaderboard />
+                    </div>
                 </div>
             </div>
-        </div>
+        </GameLayout>
     );
 };
-
+const styles = {
+    header: {
+        textAlign: 'center',
+        marginBottom: '5px',
+    },
+    subHeader: {
+        margin: 0,
+        opacity: 0.7,
+        fontStyle: 'italic',
+    },
+};
 export default DailyWagerPage;

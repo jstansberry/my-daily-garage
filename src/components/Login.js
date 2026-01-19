@@ -100,19 +100,10 @@ const styles = {
         position: 'relative',
         display: 'inline-block',
     },
-    googleButton: {
-        backgroundColor: '#4285F4',
-        color: 'white',
-        border: 'none',
-        padding: '8px 16px',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontWeight: 'bold',
-        fontSize: '0.9rem'
-    },
+
     avatarButton: {
-        width: '32px',
-        height: '32px',
+        width: '28px',
+        height: '28px',
         borderRadius: '50%',
         cursor: 'pointer',
         overflow: 'hidden',
@@ -139,7 +130,7 @@ const styles = {
         right: '0',
         backgroundColor: '#222',
         border: '1px solid #444',
-        borderRadius: '8px',
+        borderRadius: '10px',
         width: '200px',
         boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
         zIndex: 1000,

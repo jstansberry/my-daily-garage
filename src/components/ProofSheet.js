@@ -374,7 +374,7 @@ const ProofSheet = () => {
                     </div>
                 </div>
             )}
-            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '0px' }}>
                 {isLoading && <p>Loading data...</p>}
             </div>
 

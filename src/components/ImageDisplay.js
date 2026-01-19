@@ -107,7 +107,7 @@ const styles = {
         height: '200px',
         overflow: 'hidden',
         border: '2px solid #ccc',
-        borderRadius: '8px',
+        borderRadius: '10px',
         position: 'relative',
         backgroundColor: '#767676',
     },

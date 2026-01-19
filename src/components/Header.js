@@ -14,13 +14,11 @@ const Header = () => {
     return (
         <header className="app-header">
             <div className="header-container">
-                {/* Left: Logo/Title */}
                 <Link href="/" className="header-left-link">
                     <div className="header-left">
                         <img src="/google_logo_120.png" alt="My Daily Garage Logo" className="headerLogo" />
                         <div className="header-text">
-                            <h1 className="header-title">MY DAILY GARAGE</h1>
-                            <span className="header-subtitle">A new car in your garage every day!</span>
+                            <h1 className="header-title">DAILY GARAGE</h1>
                         </div>
                     </div>
                 </Link>
@@ -31,13 +29,13 @@ const Header = () => {
                     <GameSwitcher />
                     <button
                         style={{
-                            width: '32px',
-                            height: '32px',
+                            width: '28px',
+                            height: '28px',
                             borderRadius: '50%',
                             backgroundColor: '#333', /* Dark Gray */
                             color: '#FFFFFF',
                             border: '1px solid #444',
-                            fontSize: '1.2rem',
+                            fontSize: '1rem',
                             fontWeight: 'bold',
                             cursor: 'pointer',
                             display: 'flex',
@@ -52,10 +50,10 @@ const Header = () => {
                     </button>
                     <Login />
                 </div>
-            </div>
+            </div >
 
             {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
-        </header>
+        </header >
     );
 };
 

@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 // import { useChat } from '@ai-sdk/react'; // Removing to use custom fetch
-import { supabaseUrl, supabaseAnonKey } from '../../lib/supabaseClient';
+import { supabaseUrl, supabaseAnonKey } from '../../../lib/supabaseClient';
+import GameLayout from '../../../components/GameLayout';
 
 
 const INITIAL_SYSTEM_MESSAGE = "You're blindfolded sitting in a mystery vehicle! Ask me anything about it but I won't tell you the make, model, or year unless you guess it correctly!";
@@ -227,118 +228,119 @@ export default function DrivingBlindPage() {
     }, [isLoading]);
 
     return (
-        <div style={styles.container}>
-            <div style={styles.header}>
-                <h2>DRIVING BLIND</h2>
-                <p style={styles.subHeader}>Guess the car before you run out of gas!</p>
-            </div>
+        <GameLayout>
+            <div style={styles.container}>
+                <div style={styles.header}>
+                    <p style={styles.subHeader}>Guess the car before you run out of gas!</p>
+                </div>
 
-            {/* Chat Area */}
-            <div style={styles.chatWindow} ref={chatWindowRef}>
-                {messages.map(m => (
-                    <div key={m.id} style={{
-                        ...styles.messageRow,
-                        justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start'
-                    }}>
-                        <div style={{
-                            ...styles.bubble,
-                            backgroundColor: m.role === 'user' ? '#2563EB' : '#F3F4F6',
-                            color: m.role === 'user' ? 'white' : '#1F2937',
-                            borderBottomRightRadius: m.role === 'user' ? 0 : 18,
-                            borderBottomLeftRadius: m.role === 'assistant' ? 0 : 18,
+                {/* Chat Area */}
+                <div style={styles.chatWindow} ref={chatWindowRef}>
+                    {messages.map(m => (
+                        <div key={m.id} style={{
+                            ...styles.messageRow,
+                            justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start'
                         }}>
-                            {/* Filter out JSON artifacts if any slipped through legacy state */}
-                            {m.role === 'assistant' && <span style={styles.avatar}>🚙 </span>}
-                            {typeof m.content === 'object' ? m.content.response : m.content}
+                            <div style={{
+                                ...styles.bubble,
+                                backgroundColor: m.role === 'user' ? '#2563EB' : '#F3F4F6',
+                                color: m.role === 'user' ? 'white' : '#1F2937',
+                                borderBottomRightRadius: m.role === 'user' ? 0 : 10,
+                                borderBottomLeftRadius: m.role === 'assistant' ? 0 : 10,
+                            }}>
+                                {/* Filter out JSON artifacts if any slipped through legacy state */}
+                                {m.role === 'assistant' && <span style={styles.avatar}>🚙 </span>}
+                                {typeof m.content === 'object' ? m.content.response : m.content}
+                            </div>
+                        </div>
+                    ))}
+                    {isLoading && <div style={styles.loading}>I'm thinking...</div>}
+                </div>
+
+                {/* Input Area / Victory Area */}
+                <div style={styles.inputArea}>
+                    {gameState === 'won' ? (
+                        <div style={styles.victory}>
+                            <h3>VICTORY!</h3>
+                            <p style={{ color: 'black' }}>You correctly guessed the car!</p>
+                        </div>
+                    ) : gameState === 'playing' && gasTank > 0 ? (
+                        <form onSubmit={(e) => {
+                            if ((input || '').length > 100) {
+                                e.preventDefault();
+                                alert("Keep it short! Under 100 chars.");
+                                return;
+                            }
+                            handleMessageSubmit(e);
+                        }} style={styles.chatForm}>
+                            <input
+                                ref={inputRef}
+                                className="chat-input"
+                                value={input}
+                                onChange={handleInputChange}
+                                placeholder="Ask about the car..."
+                                maxLength={100}
+                                style={styles.textInput}
+                            />
+                            <button
+                                type="submit"
+                                style={styles.sendButton}
+                                disabled={isLoading || !input.trim()}
+                                onMouseDown={(e) => e.preventDefault()} // Prevent focus loss
+                            >
+                                SEND
+                            </button>
+                        </form>
+                    ) : (
+                        <div style={styles.gameOver}>
+                            <h3>OUT OF GAS!</h3>
+                            {revealedCar && (
+                                <p>The car was a {revealedCar.year} {revealedCar.make} {revealedCar.model}</p>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                {/* Gas Gauge */}
+                <div style={styles.gaugeContainer}>
+                    <div style={styles.gaugeLabel}>GAS TANK</div>
+                    <div style={styles.gaugeBar}>
+                        <div style={{ ...styles.gaugeFill, width: `${gasTank}%`, backgroundColor: gasTank < 20 ? 'red' : '#4caf50' }} />
+                    </div>
+                </div>
+
+                {/* Progress Badges */}
+                <div style={styles.badgesContainer}>
+                    <div style={{
+                        ...styles.badge,
+                        ...(solvedAttributes.year ? styles.solvedBadge : { borderColor: '#E5E7EB' })
+                    }}>
+                        <div style={styles.badgeLabel}>YEAR</div>
+                        <div style={{ ...styles.badgeValue, ...(solvedAttributes.year ? styles.solvedBadgeValue : {}) }}>
+                            {solvedAttributes.year || '???'}
                         </div>
                     </div>
-                ))}
-                {isLoading && <div style={styles.loading}>I'm thinking...</div>}
-            </div>
-
-            {/* Input Area / Victory Area */}
-            <div style={styles.inputArea}>
-                {gameState === 'won' ? (
-                    <div style={styles.victory}>
-                        <h3>VICTORY!</h3>
-                        <p style={{ color: 'black' }}>You correctly guessed the car!</p>
+                    <div style={{
+                        ...styles.badge,
+                        ...(solvedAttributes.make ? styles.solvedBadge : { borderColor: '#E5E7EB' })
+                    }}>
+                        <div style={styles.badgeLabel}>MAKE</div>
+                        <div style={{ ...styles.badgeValue, ...(solvedAttributes.make ? styles.solvedBadgeValue : {}) }}>
+                            {solvedAttributes.make || '???'}
+                        </div>
                     </div>
-                ) : gameState === 'playing' && gasTank > 0 ? (
-                    <form onSubmit={(e) => {
-                        if ((input || '').length > 100) {
-                            e.preventDefault();
-                            alert("Keep it short! Under 100 chars.");
-                            return;
-                        }
-                        handleMessageSubmit(e);
-                    }} style={styles.chatForm}>
-                        <input
-                            ref={inputRef}
-                            className="chat-input"
-                            value={input}
-                            onChange={handleInputChange}
-                            placeholder="Ask about the car..."
-                            maxLength={100}
-                            style={styles.textInput}
-                        />
-                        <button
-                            type="submit"
-                            style={styles.sendButton}
-                            disabled={isLoading || !input.trim()}
-                            onMouseDown={(e) => e.preventDefault()} // Prevent focus loss
-                        >
-                            SEND
-                        </button>
-                    </form>
-                ) : (
-                    <div style={styles.gameOver}>
-                        <h3>OUT OF GAS!</h3>
-                        {revealedCar && (
-                            <p>The car was a {revealedCar.year} {revealedCar.make} {revealedCar.model}</p>
-                        )}
-                    </div>
-                )}
-            </div>
-
-            {/* Gas Gauge */}
-            <div style={styles.gaugeContainer}>
-                <div style={styles.gaugeLabel}>GAS TANK</div>
-                <div style={styles.gaugeBar}>
-                    <div style={{ ...styles.gaugeFill, width: `${gasTank}%`, backgroundColor: gasTank < 20 ? 'red' : '#4caf50' }} />
-                </div>
-            </div>
-
-            {/* Progress Badges */}
-            <div style={styles.badgesContainer}>
-                <div style={{
-                    ...styles.badge,
-                    ...(solvedAttributes.year ? styles.solvedBadge : { borderColor: '#E5E7EB' })
-                }}>
-                    <div style={styles.badgeLabel}>YEAR</div>
-                    <div style={{ ...styles.badgeValue, ...(solvedAttributes.year ? styles.solvedBadgeValue : {}) }}>
-                        {solvedAttributes.year || '???'}
-                    </div>
-                </div>
-                <div style={{
-                    ...styles.badge,
-                    ...(solvedAttributes.make ? styles.solvedBadge : { borderColor: '#E5E7EB' })
-                }}>
-                    <div style={styles.badgeLabel}>MAKE</div>
-                    <div style={{ ...styles.badgeValue, ...(solvedAttributes.make ? styles.solvedBadgeValue : {}) }}>
-                        {solvedAttributes.make || '???'}
-                    </div>
-                </div>
-                <div style={{
-                    ...styles.badge,
-                    ...(solvedAttributes.model ? styles.solvedBadge : { borderColor: '#E5E7EB' })
-                }}>
-                    <div style={styles.badgeLabel}>MODEL</div>
-                    <div style={{ ...styles.badgeValue, ...(solvedAttributes.model ? styles.solvedBadgeValue : {}) }}>
-                        {solvedAttributes.model || '???'}
+                    <div style={{
+                        ...styles.badge,
+                        ...(solvedAttributes.model ? styles.solvedBadge : { borderColor: '#E5E7EB' })
+                    }}>
+                        <div style={styles.badgeLabel}>MODEL</div>
+                        <div style={{ ...styles.badgeValue, ...(solvedAttributes.model ? styles.solvedBadgeValue : {}) }}>
+                            {solvedAttributes.model || '???'}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </GameLayout>
     );
 
 }
@@ -353,7 +355,7 @@ const styles = {
     },
     header: {
         textAlign: 'center',
-        marginBottom: '10px',
+        marginBottom: '5px',
     },
     subHeader: {
         margin: 0,
@@ -364,7 +366,7 @@ const styles = {
         marginBottom: '5px',
         background: '#222',
         padding: '10px',
-        borderRadius: '8px',
+        borderRadius: '10px',
     },
     gaugeLabel: {
         fontSize: '0.8rem',
@@ -375,7 +377,7 @@ const styles = {
     gaugeBar: {
         height: '10px',
         background: '#444',
-        borderRadius: '5px',
+        borderRadius: '10px',
         overflow: 'hidden',
     },
     gaugeFill: {
@@ -386,7 +388,7 @@ const styles = {
         height: '300px',
         overflowY: 'auto',
         background: '#FFFFFF',
-        borderRadius: '12px',
+        borderRadius: '10px',
         padding: '20px',
         marginBottom: '10px',
         border: '1px solid #E5E7EB',
@@ -398,7 +400,7 @@ const styles = {
     },
     bubble: {
         padding: '12px 18px',
-        borderRadius: '18px',
+        borderRadius: '10px',
         maxWidth: '80%',
         lineHeight: '1.5',
         fontSize: '1rem',
@@ -417,7 +419,7 @@ const styles = {
     textInput: {
         flex: 1,
         padding: '12px 16px',
-        borderRadius: '8px',
+        borderRadius: '10px',
         border: '1px solid #E5E7EB',
         background: '#FFFFFF',
         color: '#1F2937',
@@ -425,7 +427,7 @@ const styles = {
     },
     sendButton: {
         padding: '0 24px',
-        borderRadius: '8px',
+        borderRadius: '10px',
         border: 'none',
         background: '#2563EB',
         color: 'white',
@@ -449,7 +451,7 @@ const styles = {
         textAlign: 'center',
         padding: '20px',
         background: '#D1FAE5', /* Soft Green */
-        borderRadius: '12px',
+        borderRadius: '10px',
         fontWeight: 'bold',
         color: '#065F46',
         border: '1px solid #A7F3D0',
@@ -459,7 +461,7 @@ const styles = {
         textAlign: 'center',
         padding: '20px',
         background: '#FEE2E2', /* Soft Red */
-        borderRadius: '12px',
+        borderRadius: '10px',
         fontWeight: 'bold',
         color: '#991B1B',
         border: '1px solid #FECACA',
@@ -474,7 +476,7 @@ const styles = {
     badge: {
         flex: 1,
         border: '1px solid #E5E7EB',
-        borderRadius: '8px',
+        borderRadius: '10px',
         padding: '12px',
         textAlign: 'center',
         background: '#FFFFFF',

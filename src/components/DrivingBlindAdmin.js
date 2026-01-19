@@ -317,14 +317,14 @@ const styles = {
         backgroundColor: '#a3f7bf',
         color: '#1a1a2e',
         border: 'none',
-        borderRadius: '8px',
+        borderRadius: '10px',
         fontWeight: 'bold',
         cursor: 'pointer'
     },
     form: {
         backgroundColor: 'rgba(255,255,255,0.05)',
         padding: '20px',
-        borderRadius: '12px',
+        borderRadius: '10px',
         marginBottom: '30px',
         display: 'flex',
         flexDirection: 'column',
@@ -348,7 +348,7 @@ const styles = {
         padding: '10px',
         backgroundColor: 'rgba(0,0,0,0.3)',
         border: '1px solid #444',
-        borderRadius: '6px',
+        borderRadius: '10px',
         color: '#fff',
         fontSize: '1rem'
     },
@@ -362,7 +362,7 @@ const styles = {
         backgroundColor: '#2563EB',
         color: '#fff',
         border: 'none',
-        borderRadius: '6px',
+        borderRadius: '10px',
         fontWeight: 'bold',
         cursor: 'pointer'
     },
@@ -370,7 +370,7 @@ const styles = {
         width: '100%',
         borderCollapse: 'collapse',
         backgroundColor: 'rgba(255,255,255,0.03)',
-        borderRadius: '8px',
+        borderRadius: '10px',
         overflow: 'hidden'
     },
     th: {
@@ -396,7 +396,7 @@ const styles = {
         backgroundColor: '#F59E0B',
         color: '#fff',
         border: 'none',
-        borderRadius: '4px',
+        borderRadius: '10px',
         marginRight: '10px',
         cursor: 'pointer'
     },

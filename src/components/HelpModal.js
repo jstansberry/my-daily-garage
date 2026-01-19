@@ -91,7 +91,7 @@ const styles = {
     modal: {
         backgroundColor: '#1a1a1a',
         padding: '30px',
-        borderRadius: '12px',
+        borderRadius: '10px',
         width: '90%',
         maxWidth: '500px',
         maxHeight: '85vh', // Allow scrolling if tall

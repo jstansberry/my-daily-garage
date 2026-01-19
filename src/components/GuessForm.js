@@ -170,7 +170,7 @@ const styles = {
     },
     input: {
         padding: '8px',
-        borderRadius: '4px',
+        borderRadius: '10px',
         border: '1px solid #ccc',
         fontSize: '16px',
         flex: 1,
@@ -180,7 +180,7 @@ const styles = {
         backgroundColor: '#333',
         color: 'white',
         border: 'none',
-        borderRadius: '4px',
+        borderRadius: '10px',
         cursor: 'pointer',
         fontSize: '16px',
         fontWeight: 'bold',

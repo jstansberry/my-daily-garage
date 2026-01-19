@@ -173,7 +173,7 @@ const DailyWagerCard = React.memo(({ auction, userGuessId, initialGuess, winnerD
                     background: 'rgba(0,0,0,0.7)',
                     color: '#fff',
                     padding: '5px 10px',
-                    borderRadius: '4px',
+                    borderRadius: '10px',
                     fontSize: '0.8rem'
                 }}>
                     {timeLeft}
@@ -191,7 +191,7 @@ const DailyWagerCard = React.memo(({ auction, userGuessId, initialGuess, winnerD
                             background: '#FFD700',
                             color: '#000',
                             padding: '2px 8px',
-                            borderRadius: '4px',
+                            borderRadius: '10px',
                             fontSize: '0.7rem',
                             fontWeight: 'bold',
                             textTransform: 'uppercase'
@@ -207,7 +207,7 @@ const DailyWagerCard = React.memo(({ auction, userGuessId, initialGuess, winnerD
                         background: 'linear-gradient(45deg, #FFD70033, transparent)',
                         border: '1px solid #FFD700',
                         padding: '10px',
-                        borderRadius: '8px',
+                        borderRadius: '10px',
                         marginBottom: '10px'
                     }}>
                         <strong>WINNER:</strong> {winnerData?.winner_name ? (() => {
@@ -238,14 +238,14 @@ const DailyWagerCard = React.memo(({ auction, userGuessId, initialGuess, winnerD
                     <div style={{
                         background: '#2a2a2a',
                         padding: '10px',
-                        borderRadius: '8px',
+                        borderRadius: '10px',
                         border: '1px solid #444',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between'
                     }}>
                         <span style={{ color: '#ccc', fontWeight: 'bold' }}>Meets Reserve?</span>
-                        <div style={{ display: 'flex', background: '#111', borderRadius: '4px', padding: '2px' }}>
+                        <div style={{ display: 'flex', background: '#111', borderRadius: '10px', padding: '2px' }}>
                             <button
                                 onClick={() => !isLocked && setReserveNotMet(false)} // Yes = reserve met (false)
                                 disabled={isLocked}
@@ -253,7 +253,7 @@ const DailyWagerCard = React.memo(({ auction, userGuessId, initialGuess, winnerD
                                     background: !reserveNotMet ? '#4CAF50' : 'transparent',
                                     color: !reserveNotMet ? '#fff' : '#888',
                                     border: 'none',
-                                    borderRadius: '4px',
+                                    borderRadius: '10px',
                                     padding: '5px 15px',
                                     cursor: isLocked ? 'not-allowed' : 'pointer',
                                     fontWeight: 'bold',
@@ -270,7 +270,7 @@ const DailyWagerCard = React.memo(({ auction, userGuessId, initialGuess, winnerD
                                     background: reserveNotMet ? '#e94560' : 'transparent',
                                     color: reserveNotMet ? '#fff' : '#888',
                                     border: 'none',
-                                    borderRadius: '4px',
+                                    borderRadius: '10px',
                                     padding: '5px 15px',
                                     cursor: isLocked ? 'not-allowed' : 'pointer',
                                     fontWeight: 'bold',
@@ -320,7 +320,7 @@ const DailyWagerCard = React.memo(({ auction, userGuessId, initialGuess, winnerD
                                     padding: '10px 10px 10px 25px',
                                     background: '#222',
                                     border: '1px solid #444',
-                                    borderRadius: '8px',
+                                    borderRadius: '10px',
                                     color: '#fff',
                                     fontSize: '1.2rem',
                                     outline: 'none',
@@ -353,7 +353,7 @@ const DailyWagerCard = React.memo(({ auction, userGuessId, initialGuess, winnerD
                             color: '#fff',
                             border: 'none',
                             padding: '12px',
-                            borderRadius: '8px',
+                            borderRadius: '10px',
                             fontSize: '1rem',
                             fontWeight: 'bold',
                             cursor: submitting ? 'wait' : 'pointer',
@@ -369,7 +369,7 @@ const DailyWagerCard = React.memo(({ auction, userGuessId, initialGuess, winnerD
                         padding: '10px',
                         background: '#333',
                         color: '#aaa',
-                        borderRadius: '8px'
+                        borderRadius: '10px'
                     }}>
                         Wagering Locked
                     </div>
