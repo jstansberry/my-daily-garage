@@ -128,7 +128,7 @@ serve(async (req) => {
                     parts: [{ text: systemPrompt }]
                 },
                 generationConfig: {
-                    maxOutputTokens: 650,
+                    maxOutputTokens: 1200,
                     responseMimeType: "application/json"
                 }
             })
