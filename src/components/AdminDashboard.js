@@ -15,9 +15,9 @@ const AdminDashboard = () => {
             <div style={{
                 display: 'flex',
                 gap: '10px',
-                marginBottom: '20px',
+                marginBottom: '0px',
                 borderBottom: '1px solid var(--glass-border)',
-                paddingBottom: '10px'
+                paddingBottom: '00px'
             }}>
                 <button
                     onClick={() => setActiveTab('grand-prix')}
@@ -26,7 +26,7 @@ const AdminDashboard = () => {
                         border: '1px solid var(--glass-border)',
                         color: '#fff',
                         padding: '10px 20px',
-                        borderRadius: '8px',
+                        borderRadius: '10px',
                         cursor: 'pointer',
                         fontWeight: 'bold',
                         transition: 'all 0.3s ease'
@@ -41,7 +41,7 @@ const AdminDashboard = () => {
                         border: '1px solid var(--glass-border)',
                         color: '#fff',
                         padding: '10px 20px',
-                        borderRadius: '8px',
+                        borderRadius: '10px',
                         cursor: 'pointer',
                         fontWeight: 'bold',
                         transition: 'all 0.3s ease'
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
                         border: '1px solid var(--glass-border)',
                         color: '#fff',
                         padding: '10px 20px',
-                        borderRadius: '8px',
+                        borderRadius: '10px',
                         cursor: 'pointer',
                         fontWeight: 'bold',
                         transition: 'all 0.3s ease'

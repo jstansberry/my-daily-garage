@@ -27,17 +27,17 @@ const styles = {
         gap: '6px',
         backgroundColor: '#3d95ce', // Venmo blueish
         color: 'white',
-        padding: '6px 12px',
-        borderRadius: '20px',
+        padding: '4px 10px',
+        borderRadius: '10px',
         textDecoration: 'none',
         fontWeight: 'bold',
-        fontSize: '0.9rem',
+        fontSize: '0.8rem',
         marginRight: '10px',
         transition: 'opacity 0.2s',
         border: '1px solid rgba(255,255,255,0.2)'
     },
     icon: {
-        fontSize: '1.1rem',
+        fontSize: '1rem',
         fontStyle: 'italic',
         fontWeight: '900'
     }

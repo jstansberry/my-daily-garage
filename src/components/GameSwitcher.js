@@ -11,17 +11,17 @@ const GameSwitcher = () => {
 
     // Determine current game based on path
     let currentGame = 'grand-prix';
-    if (pathname === '/daily-wager') currentGame = 'daily-wager';
-    if (pathname === '/driving-blind') currentGame = 'driving-blind';
+    if (pathname.startsWith('/games/daily-wager')) currentGame = 'daily-wager';
+    if (pathname.startsWith('/games/driving-blind')) currentGame = 'driving-blind';
 
     const handleSelect = (game) => {
         setIsOpen(false);
         if (game === 'grand-prix') {
-            router.push('/');
+            router.push('/games/grand-prix');
         } else if (game === 'daily-wager') {
-            router.push('/daily-wager');
+            router.push('/games/daily-wager');
         } else if (game === 'driving-blind') {
-            router.push('/driving-blind');
+            router.push('/games/driving-blind');
         }
     };
 
@@ -39,17 +39,17 @@ const GameSwitcher = () => {
     const getCurrentLabel = () => {
         if (currentGame === 'daily-wager') return (
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.2rem' }}>💰</span> DAILY WAGER
+                <span style={{ fontSize: '1.2rem' }}>💰</span> <span className="game-switcher-text">DAILY WAGER</span>
             </span>
         );
         if (currentGame === 'driving-blind') return (
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.2rem' }}>😎</span> DRIVING BLIND
+                <span style={{ fontSize: '1.2rem' }}>😎</span> <span className="game-switcher-text">DRIVING BLIND</span>
             </span>
         );
         return (
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.2rem' }}>🏁</span> GRAND PRIX
+                <span style={{ fontSize: '1.2rem' }}>🏁</span> <span className="game-switcher-text">GRAND PRIX</span>
             </span>
         );
     };
@@ -59,12 +59,13 @@ const GameSwitcher = () => {
             {/* Trigger Button */}
             {/* Trigger Button */}
             <button
+                className="game-switcher-button"
                 onClick={() => setIsOpen(!isOpen)}
                 style={{
                     background: '#222',
                     border: '1px solid #444',
-                    borderRadius: '30px',
-                    padding: '6px 14px',
+                    borderRadius: '10px',
+                    padding: '4px 10px',
                     color: '#FFFFFF',
                     fontFamily: "'Roboto Condensed', sans-serif",
                     fontWeight: 'bold',
@@ -75,7 +76,6 @@ const GameSwitcher = () => {
                     gap: '6px',
                     transition: 'all 0.3s ease',
                     boxShadow: '0 1px 2px rgba(0,0,0,0.3)',
-                    minWidth: '180px',
                     justifyContent: 'space-between'
                 }}
             >
@@ -101,7 +101,7 @@ const GameSwitcher = () => {
                     minWidth: '220px',
                     background: '#1a1a1a', /* Dark bg */
                     border: '1px solid #333',
-                    borderRadius: '12px',
+                    borderRadius: '10px',
                     overflow: 'hidden',
                     boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
                     animation: 'slideDown 0.2s ease-out',

@@ -66,7 +66,7 @@ const styles = {
         backgroundColor: '#4a9eff',
         color: '#fff',
         border: 'none',
-        borderRadius: '5px',
+        borderRadius: '10px',
         padding: '8px 20px',
         cursor: 'pointer',
         fontWeight: 'bold',

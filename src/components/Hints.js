@@ -83,7 +83,7 @@ const styles = {
         textAlign: 'center',
         padding: '15px',
         backgroundColor: 'rgba(0,0,0,0.2)',
-        borderRadius: '12px',
+        borderRadius: '10px',
     },
     title: {
         fontSize: '1rem',
@@ -109,7 +109,7 @@ const styles = {
         padding: '8px 16px',
         backgroundColor: 'rgba(255,255,255,0.1)',
         border: '1px solid rgba(255,255,255,0.2)',
-        borderRadius: '20px',
+        borderRadius: '10px',
         color: '#fff',
         cursor: 'pointer',
         fontSize: '0.85rem',
@@ -121,7 +121,7 @@ const styles = {
         backgroundColor: '#a3f7bf',
         color: '#fff',
         border: '1px solid #a3f7bf',
-        borderRadius: '20px',
+        borderRadius: '10px',
         cursor: 'pointer',
         fontWeight: 'bold',
         fontSize: '0.85rem',
@@ -134,7 +134,7 @@ const styles = {
     flag: {
         height: '40px',
         boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
-        borderRadius: '4px'
+        borderRadius: '10px'
     },
     text: {
         fontSize: '1.2rem',
@@ -148,7 +148,7 @@ const styles = {
         maxWidth: '325px',
         backgroundColor: '#fff',
         padding: '10px',
-        borderRadius: '8px'
+        borderRadius: '10px'
     },
     factItem: {
         margin: '5px 0',
