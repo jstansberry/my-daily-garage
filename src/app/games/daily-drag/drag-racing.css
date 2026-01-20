@@ -1,0 +1,751 @@
+/* Drag Racing Game Styles - Compact Version */
+
+/* Main Container */
+.dr-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 900px;
+    /* Reduced from 1280px */
+    margin: 0 auto;
+    padding: 12px;
+    /* Reduced */
+    gap: 8px;
+    /* Reduced */
+    background-color: #171717;
+    color: white;
+    min-height: 500px;
+    box-sizing: border-box;
+}
+
+.dr-container * {
+    box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+    .dr-container {
+        flex-direction: row;
+        height: auto;
+        min-height: 500px;
+    }
+}
+
+/* Columns */
+.dr-column-left,
+.dr-column-right {
+    /* width: 100%; Removed to prevent overflow */
+    flex: 1;
+    background-color: #262626;
+    border: 1px solid #404040;
+    border-radius: 6px;
+    padding: 12px;
+    /* Reduced from 24px */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dr-column-center {
+    width: 100%;
+    flex: 3;
+    /* Increased proportion */
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+
+    .dr-column-left,
+    .dr-column-right {
+        width: 180px;
+        /* Fixed small width */
+        flex: unset;
+    }
+
+    .dr-column-left {
+        order: 1;
+    }
+
+    .dr-column-center {
+        flex: 1;
+        order: 2;
+    }
+
+    .dr-column-right {
+        width: 180px;
+        order: 3;
+    }
+}
+
+/* Shared Typography */
+.dr-header {
+    font-size: 1rem;
+    /* Reduced */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid #404040;
+    padding-bottom: 4px;
+    margin: 0;
+}
+
+.dr-header-orange {
+    color: #f97316;
+}
+
+.dr-header-blue {
+    color: #3b82f6;
+    text-align: right;
+}
+
+.dr-label {
+    font-size: 0.75rem;
+    /* Reduced */
+    color: #fff;
+    font-family: monospace;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Settings Buttons */
+.dr-button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    /* Reduced */
+}
+
+.dr-button-row {
+    display: flex;
+    gap: 4px;
+}
+
+.dr-btn-select {
+    padding: 8px;
+    /* Reduced */
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    border: 1px solid transparent;
+    background-color: #171717;
+    color: #fff;
+    font-size: 0.8rem;
+    /* Reduced */
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+    margin-bottom: 2px;
+}
+
+.dr-btn-select:hover {
+    background-color: #262626;
+}
+
+.dr-btn-select.active {
+    background-color: #404040;
+    color: white;
+    border-color: #f97316;
+}
+
+.dr-btn-pill {
+    flex: 1;
+    padding: 6px;
+    /* Reduced */
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.7rem;
+    /* Reduced */
+    text-transform: uppercase;
+    font-weight: 700;
+    border: 1px solid #404040;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+.dr-btn-pill:hover {
+    border-color: #525252;
+}
+
+.dr-btn-pill.sportsman-active {
+    border-color: #eab308;
+    color: #fff;
+    background-color: rgba(234, 179, 8, 0.1);
+}
+
+.dr-btn-pill.pro-active {
+    border-color: #f97316;
+    color: #fff;
+    background-color: rgba(249, 115, 22, 0.1);
+}
+
+
+/* Sound Toggle */
+.dr-sound-row {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid #404040;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dr-toggle {
+    width: 36px;
+    height: 18px;
+    border-radius: 9999px;
+    position: relative;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.dr-toggle.on {
+    background-color: #16a34a;
+}
+
+.dr-toggle.off {
+    background-color: #525252;
+}
+
+.dr-toggle-dot {
+    position: absolute;
+    top: 2px;
+    width: 14px;
+    height: 14px;
+    background-color: white;
+    border-radius: 50%;
+    transition: left 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.dr-toggle.on .dr-toggle-dot {
+    left: 20px;
+}
+
+.dr-toggle.off .dr-toggle-dot {
+    left: 2px;
+}
+
+
+/* Cockpit / Center */
+.dr-cockpit-container {
+    background-color: #171717;
+    height: 100%;
+    min-height: 380px;
+    /* Reduced */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid #262626;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.dr-windscreen {
+    flex: 1;
+    position: relative;
+    background: linear-gradient(to bottom, #0c4a6e, #0369a1);
+    overflow: hidden;
+    width: 100%;
+}
+
+.dr-track-floor {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60%;
+    background-color: #262626;
+    perspective: 1000px;
+}
+
+.dr-track-surface {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0.5);
+    height: 100%;
+    width: 200%;
+    background-color: #525252;
+    transform-origin: bottom;
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+}
+
+.dr-christmas-tree {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+    width: 54px;
+    /* Increased by 50% */
+    height: 165px;
+    /* Increased by 50% */
+    background-color: #262626;
+    border: 1px solid #171717;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.dr-light-row {
+    display: flex;
+    gap: 5px;
+}
+
+.dr-bulb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid black;
+    transition: background-color 0.1s;
+}
+
+.dr-bulb.blue {
+    background-color: #1e3a8a;
+}
+
+.dr-bulb.blue.active {
+    background-color: #3b82f6;
+    box-shadow: 0 0 12px #3b82f6;
+}
+
+.dr-bulb.yellow {
+    background-color: #713f12;
+}
+
+.dr-bulb.yellow.active {
+    background-color: #facc15;
+    box-shadow: 0 0 12px #facc15;
+}
+
+.dr-bulb-lg {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid black;
+}
+
+.dr-bulb-lg.amber {
+    background-color: #78350f;
+}
+
+.dr-bulb-lg.amber.active {
+    background-color: #fbbf24;
+    box-shadow: 0 0 12px #fbbf24;
+}
+
+.dr-bulb-xl {
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    border: 2px solid #171717;
+}
+
+.dr-bulb-xl.green {
+    background-color: #14532d;
+}
+
+.dr-bulb-xl.green.active {
+    background-color: #22c55e;
+    box-shadow: 0 0 18px #22c55e;
+}
+
+.dr-bulb-xl.red {
+    background-color: #7f1d1d;
+}
+
+.dr-bulb-xl.red.active {
+    background-color: #ef4444;
+    box-shadow: 0 0 18px #ef4444;
+}
+
+
+.dr-hud-status {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-family: monospace;
+    font-size: 0.75rem;
+    /* Reduced */
+    color: #22c55e;
+}
+
+.dr-hud-status span {
+    color: white;
+    font-weight: bold;
+}
+
+
+/* Dashboard */
+.dr-dashboard {
+    height: 160px;
+    /* Reduced from 220px */
+    background-color: #171717;
+    border-top: 2px solid #404040;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 12px;
+}
+
+.dr-dashboard-inner {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    /* Reduced */
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 10;
+}
+
+.dr-gauge {
+    background-color: black;
+    border-radius: 50%;
+    border: 3px solid #525252;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 1);
+}
+
+.dr-gauge.speedo {
+    width: 90px;
+    height: 90px;
+}
+
+.dr-gauge.tach {
+    width: 120px;
+    height: 120px;
+}
+
+.dr-gauge-value {
+    font-family: monospace;
+    font-weight: bold;
+    color: white;
+}
+
+.dr-gauge.speedo .dr-gauge-value {
+    font-size: 1.5rem;
+}
+
+.dr-gauge.tach .dr-gauge-value {
+    font-size: 1.8rem;
+    color: #f97316;
+}
+
+.dr-gauge-label {
+    font-size: 0.6rem;
+    color: #737373;
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.dr-steering-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    padding-bottom: 8px;
+}
+
+.dr-shift-light {
+    width: 36px;
+    /* Reduced */
+    height: 36px;
+    border-radius: 50%;
+    border: 3px solid #171717;
+    background-color: rgba(127, 29, 29, 0.5);
+    margin-bottom: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dr-shift-label {
+    font-size: 0.55rem;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.4);
+    pointer-events: none;
+}
+
+.dr-shift-light.active .dr-shift-label {
+    color: white;
+}
+
+.dr-yoke {
+    width: 60%;
+    height: 48px;
+    /* Reduced */
+    border: 3px solid #404040;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+    background-color: #262626;
+}
+
+.dr-yoke-handle {
+    width: 12px;
+    height: 100%;
+    background-color: #525252;
+    border-radius: 3px;
+}
+
+.dr-yoke-center {
+    width: 48px;
+    height: 36px;
+    background-color: #404040;
+    /* Neutral */
+    border-radius: 3px;
+    border: 2px solid #525252;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Right Column Controls */
+.dr-controls-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Align Top */
+    align-items: center;
+    /* Center Buttons */
+    gap: 16px;
+    /* Increased gap */
+    padding-top: 20px;
+}
+
+.dr-btn-control {
+    width: 60%;
+    /* Compact Width */
+    padding: 6px;
+    /* Reduced from 24px */
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: 700;
+    font-size: 0.8rem;
+    /* Reduced */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.dr-btn-control:disabled {
+    background-color: #404040;
+    color: #737373;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.dr-btn-prestage {
+    background-color: #2563eb;
+    color: white;
+    box-shadow: 0 3px 0 #1e3a8b;
+}
+
+.dr-btn-prestage:active {
+    transform: translateY(3px);
+    box-shadow: none;
+}
+
+.dr-btn-stage {
+    background-color: #ca8a04;
+    color: white;
+    box-shadow: 0 3px 0 #a16207;
+}
+
+.dr-btn-stage:active {
+    transform: translateY(3px);
+    box-shadow: none;
+}
+
+.dr-btn-backup {
+    width: 60%;
+    /* Compact Width */
+    padding: 8px;
+    /* Reduced */
+    border-radius: 4px;
+    font-weight: 900;
+    font-size: 1rem;
+    /* Reduced */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 2px solid #525252;
+    background-color: #171717;
+    color: #4af510;
+}
+
+.dr-btn-backup.active {
+    background-color: #16a34a;
+    border-color: #16a34a;
+    color: white;
+    box-shadow: 0 0 15px rgba(22, 163, 74, 0.5);
+}
+
+/* Modal / Overlays */
+.dr-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 16px;
+    border-radius: 6px;
+    /* Matches container */
+}
+
+.dr-modal-content {
+    background-color: #171717;
+    border: 4px solid #404040;
+    border-radius: 8px;
+    padding: 24px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    animation: drFadeIn 0.3s ease-out;
+}
+
+@keyframes drFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.dr-modal-title {
+    font-size: 2rem;
+    font-weight: 900;
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 24px;
+    letter-spacing: -0.05em;
+    line-height: 1;
+}
+
+.dr-modal-title.win {
+    color: #22c55e;
+}
+
+.dr-modal-title.loss {
+    color: #ef4444;
+}
+
+.dr-results-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.dr-result-card {
+    flex: 1;
+    background-color: #262626;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #525252;
+}
+
+.dr-result-label {
+    font-size: 0.65rem;
+    color: #a3a3a3;
+    text-align: center;
+    margin-bottom: 8px;
+    font-family: monospace;
+}
+
+.dr-stat-row {
+    font-family: monospace;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.dr-stat-label {
+    color: #737373;
+}
+
+.dr-stat-value {
+    color: white;
+    font-weight: bold;
+}
+
+.dr-stat-value.red-light {
+    color: #ef4444;
+}
+
+.dr-btn-primary {
+    width: 100%;
+    padding: 16px;
+    background-color: #2563eb;
+    color: white;
+    font-weight: bold;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 4px 0 #1e3a8a;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.dr-btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.dr-btn-primary:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}
+
+/* Best ET Display */
+.dr-best-et {
+    margin-top: auto;
+    /* Push to bottom if container is flex col */
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #fff;
+    background-color: #171717;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid #404040;
+    width: 80%;
+    text-align: center;
+}
+
+.dr-best-et span {
+    color: white;
+    font-weight: bold;
+}
