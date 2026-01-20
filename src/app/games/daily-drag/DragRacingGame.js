@@ -315,13 +315,7 @@ export default function DragRacingGame() {
     return (
         <div className="dr-container relative">
 
-            {showResults && playerResult && computerResult && (
-                <RaceResults
-                    playerResult={playerResult}
-                    computerResult={computerResult}
-                    onClose={handleReset}
-                />
-            )}
+
 
 
 
@@ -344,6 +338,13 @@ export default function DragRacingGame() {
                     activeLights={activeLights}
                     telemetry={telemetry}
                 />
+                {showResults && playerResult && computerResult && (
+                    <RaceResults
+                        playerResult={playerResult}
+                        computerResult={computerResult}
+                        onClose={handleReset}
+                    />
+                )}
             </div>
 
             {/* Right Column: Controls */}
