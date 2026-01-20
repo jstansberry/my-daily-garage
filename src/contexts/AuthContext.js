@@ -57,8 +57,14 @@ export const AuthProvider = ({ children }) => {
 
         initAuth();
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (mounted) {
+                // Clear anonymous storage on explicit login
+                // We check for SIGNED_IN event specifically
+                if (event === 'SIGNED_IN') {
+                    clearAnonymousStorage();
+                }
+
                 setSession(session);
                 setUser(session?.user ?? null);
 
@@ -78,6 +84,29 @@ export const AuthProvider = ({ children }) => {
             subscription.unsubscribe();
         };
     }, []);
+
+    const clearAnonymousStorage = () => {
+        try {
+            // Get all keys
+            const keys = Object.keys(localStorage);
+
+            // Whitelist of keys to PRESERVE
+            // 1. cookieConcent -> User consent
+            // 2. sb-* -> Supabase Auth tokens (CRITICAL)
+            // 3. Any others? -> verified: remaining keys like 'driving-blind-*', 'cardle_state_*' are what we want to nuke.
+
+            keys.forEach(key => {
+                const isConsent = key === 'cookieConcent';
+                const isSupabaseToken = key.startsWith('sb-');
+
+                if (!isConsent && !isSupabaseToken) {
+                    localStorage.removeItem(key);
+                }
+            });
+        } catch (e) {
+            console.error("Failed to clear anonymous storage:", e);
+        }
+    };
 
     const fetchProfile = async (userId) => {
         if (fetchingProfileRef.current === userId) return; // Already fetching/fetched for this user
@@ -124,7 +153,18 @@ export const AuthProvider = ({ children }) => {
         if (error) throw error;
 
         // Clear all local storage (game state, etc)
+        // For logout, we might want to clear EVERYTHING or keep consensus? 
+        // Existing logic cleared everything. Let's keep it consistent but maybe respect cookieConsent?
+        // Actually, existing logic was localStorage.clear() which nukes consent too.
+        // Let's refine this to be polite to the user's consent choice even on logout.
+
+        // Old: localStorage.clear();
+        // New: Be selective
+        const consent = localStorage.getItem('cookieConcent');
         localStorage.clear();
+        if (consent) {
+            localStorage.setItem('cookieConcent', consent);
+        }
 
         // Force refresh to reset React state completely
         window.location.reload();
