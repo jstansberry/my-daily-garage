@@ -58,12 +58,20 @@ export default function DrivingBlindPage() {
             }]);
 
             // Update Solved Attributes
+            // Update Solved Attributes
+            // Calculate tentative new state for victory check
+            const newMake = data.solved_make || solvedAttributes.make;
+            const newModel = data.solved_model || solvedAttributes.model;
+            const newYear = data.solved_year || solvedAttributes.year;
+
+            const isClientSideWin = newMake && newModel && newYear;
+
             setSolvedAttributes(prev => {
                 // Only update if changed to avoid unnecessary re-renders
                 if (
-                    prev.make === data.solved_make &&
-                    prev.model === data.solved_model &&
-                    prev.year === data.solved_year
+                    prev.make === (data.solved_make || prev.make) &&
+                    prev.model === (data.solved_model || prev.model) &&
+                    prev.year === (data.solved_year || prev.year)
                 ) {
                     return prev;
                 }
@@ -76,7 +84,7 @@ export default function DrivingBlindPage() {
             });
 
             // Check for win
-            if (data.won) {
+            if (data.won || isClientSideWin) {
                 setGameState('won');
                 // You could trigger confetti here or other effects
             }
