@@ -22,6 +22,11 @@ Each phase is designed to be executed sequentially.
 - [ ] **1.C: Baseline Unit Testing**
     - Write unit tests for critical utilities (e.g., Score calculation logic).
     - Write component tests for `Login`, `Header`, and basic `GameContainer` rendering.
+- [ ] **1.D: Staging Infrastructure Setup**
+    - **Supabase:** Create a dedicated "Staging" project (separate from Prod & Local).
+    - **Vercel:** Configure a separate "Staging" project (or Preview environment) linked to the `staging` branch.
+    - **CI/CD:** Ensure pushes to `staging` auto-deploy to the Staging environment.
+    - **Sync:** Migrate Prod schema/data to Staging for initial parity.
 
 ## Phase 2: Visual Identity & "F1 2026" Redesign
 **Theme:** *The "Haas 2026" Makeover.* Modern, sleek, sci-fi aesthetic with high contrast and smooth motion.
