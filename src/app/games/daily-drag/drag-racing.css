@@ -97,7 +97,7 @@
 
 .dr-header-blue {
     color: #3b82f6;
-    text-align: right;
+    text-align: left;
 }
 
 .dr-label {
@@ -260,7 +260,7 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 60%;
+    height: 88%;
     background-color: #262626;
     perspective: 1000px;
 }
@@ -282,92 +282,100 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -40%);
-    width: 54px;
-    /* Increased by 50% */
-    height: 165px;
-    /* Increased by 50% */
+    width: 77px;
+    height: 231px;
     background-color: #262626;
-    border: 1px solid #171717;
-    border-radius: 4px;
+    border: 2px solid #171717;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 4px 0;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     z-index: 10;
 }
 
 .dr-light-row {
     display: flex;
-    gap: 5px;
+    gap: 7px;
 }
 
 .dr-bulb {
-    width: 12px;
-    height: 12px;
+    width: 17px;
+    height: 17px;
     border-radius: 50%;
     border: 1px solid black;
-    transition: background-color 0.1s;
+    transition: background-color 0.05s;
 }
 
 .dr-bulb.blue {
-    background-color: #1e3a8a;
+    background-color: #3b82f6;
+    /* Lighter blue */
 }
 
 .dr-bulb.blue.active {
-    background-color: #3b82f6;
-    box-shadow: 0 0 12px #3b82f6;
+    background-color: #60a5fa;
+    /* Neon blue */
+    box-shadow: 0 0 20px #60a5fa;
 }
 
 .dr-bulb.yellow {
-    background-color: #713f12;
+    background-color: #ca8a04;
+    /* Lighter yellow */
 }
 
 .dr-bulb.yellow.active {
-    background-color: #facc15;
-    box-shadow: 0 0 12px #facc15;
+    background-color: #fef08a;
+    /* Bright yellow */
+    box-shadow: 0 0 20px #fef08a;
 }
 
 .dr-bulb-lg {
-    width: 15px;
-    height: 15px;
+    width: 21px;
+    height: 21px;
     border-radius: 50%;
     border: 1px solid black;
 }
 
 .dr-bulb-lg.amber {
-    background-color: #78350f;
+    background-color: #b45309;
+    /* Lighter amber */
 }
 
 .dr-bulb-lg.amber.active {
     background-color: #fbbf24;
-    box-shadow: 0 0 12px #fbbf24;
+    /* Bright amber */
+    box-shadow: 0 0 25px #fbbf24;
 }
 
 .dr-bulb-xl {
-    width: 21px;
-    height: 21px;
+    width: 29px;
+    height: 29px;
     border-radius: 50%;
     border: 2px solid #171717;
 }
 
 .dr-bulb-xl.green {
-    background-color: #14532d;
+    background-color: #15803d;
+    /* Lighter green */
 }
 
 .dr-bulb-xl.green.active {
-    background-color: #22c55e;
-    box-shadow: 0 0 18px #22c55e;
+    background-color: #4ade80;
+    /* Neon green */
+    box-shadow: 0 0 30px #4ade80;
 }
 
 .dr-bulb-xl.red {
-    background-color: #7f1d1d;
+    background-color: #b91c1c;
+    /* Lighter red */
 }
 
 .dr-bulb-xl.red.active {
-    background-color: #ef4444;
-    box-shadow: 0 0 18px #ef4444;
+    background-color: #f87171;
+    /* Neon red */
+    box-shadow: 0 0 30px #f87171;
 }
 
 
@@ -425,13 +433,13 @@
 }
 
 .dr-gauge.speedo {
-    width: 90px;
-    height: 90px;
+    width: 110px;
+    height: 110px;
 }
 
 .dr-gauge.tach {
-    width: 120px;
-    height: 120px;
+    width: 110px;
+    height: 110px;
 }
 
 .dr-gauge-value {
@@ -445,7 +453,7 @@
 }
 
 .dr-gauge.tach .dr-gauge-value {
-    font-size: 1.8rem;
+    font-size: 1.1rem;
     color: #f97316;
 }
 

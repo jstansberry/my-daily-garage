@@ -75,8 +75,8 @@ export default function DragRacingGame() {
             minRT = 0.040; maxRT = 0.090;
             speedBase = 325;
         } else { // Pro
-            minET = 3.65; maxET = 3.75;
-            minRT = 0.000; maxRT = 0.040;
+            minET = 3.68; maxET = 3.78;
+            minRT = 0.015; maxRT = 0.040;
             speedBase = 335;
         }
 
@@ -138,6 +138,7 @@ export default function DragRacingGame() {
             et: engineResult.et,
             rt: rt,
             speed: engineResult.speed,
+            shiftRPM: engineResult.shiftRPM,
             redLight: rt < 0
         };
 
@@ -237,7 +238,6 @@ export default function DragRacingGame() {
             const rt = (now - launchTimeRef.current) / 1000;
             reactionTimeRef.current = rt;
 
-            console.log("REACTION TIME:", rt);
             sounds.play('launch');
 
             // Manually start physics

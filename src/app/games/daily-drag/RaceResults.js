@@ -77,6 +77,12 @@ export default function RaceResults({ playerResult, computerResult, onClose }) {
                                     <span className="dr-stat-label">MPH</span>
                                     <span className="dr-stat-value">{Math.floor(playerResult.speed)}</span>
                                 </div>
+                                <div className="dr-stat-row">
+                                    <span className="dr-stat-label">SHIFT</span>
+                                    <span style={{ color: '#f97316' }} className="dr-stat-value">
+                                        {playerResult.shiftRPM}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
