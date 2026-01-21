@@ -138,6 +138,7 @@ export default function DragRacingGame() {
             et: engineResult.et,
             rt: rt,
             speed: engineResult.speed,
+            shiftRPM: engineResult.shiftRPM,
             redLight: rt < 0
         };
 

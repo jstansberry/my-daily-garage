@@ -97,7 +97,7 @@
 
 .dr-header-blue {
     color: #3b82f6;
-    text-align: right;
+    text-align: left;
 }
 
 .dr-label {
@@ -260,7 +260,7 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 60%;
+    height: 88%;
     background-color: #262626;
     perspective: 1000px;
 }
@@ -425,13 +425,13 @@
 }
 
 .dr-gauge.speedo {
-    width: 90px;
-    height: 90px;
+    width: 110px;
+    height: 110px;
 }
 
 .dr-gauge.tach {
-    width: 120px;
-    height: 120px;
+    width: 110px;
+    height: 110px;
 }
 
 .dr-gauge-value {
@@ -445,7 +445,7 @@
 }
 
 .dr-gauge.tach .dr-gauge-value {
-    font-size: 1.8rem;
+    font-size: 1.1rem;
     color: #f97316;
 }
 

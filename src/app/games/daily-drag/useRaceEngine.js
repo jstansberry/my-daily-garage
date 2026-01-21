@@ -28,6 +28,7 @@ export default function useRaceEngine({ gameState, onFinish, onRedLight }) {
         running: false, // Explicit running state
         shiftLightTime: 0, // When did the light turn on?
         finished: false,
+        shiftPointRPM: 0,
         // Chaos Factors (Randomized per run)
         tractionFactor: 1.0,
         dragFactor: 1.0,
@@ -128,7 +129,7 @@ export default function useRaceEngine({ gameState, onFinish, onRedLight }) {
         if (stateRef.current.position >= TRACK_LENGTH_METERS && !stateRef.current.finished) {
             stateRef.current.finished = true;
             const et = (Date.now() - stateRef.current.startTime) / 1000;
-            onFinish({ et, speed: mph });
+            onFinish({ et, speed: mph, shiftRPM: stateRef.current.shiftPointRPM });
             cancelAnimationFrame(requestRef.current);
             return;
         }
@@ -155,6 +156,20 @@ export default function useRaceEngine({ gameState, onFinish, onRedLight }) {
     const shift = () => {
         if (!stateRef.current.hasShifted) {
             stateRef.current.hasShifted = true;
+            // Capture Shift RPM (approximate based on current velocity)
+            // We need to calculate it because 'rpm' state is lagging one frame or so potentially, 
+            // but using the last calculated RPM from the animate loop logic is safer.
+            // Simplest: use the 'rpm' state (might be 1 frame old) or recalculate.
+            // Let's grab the value computed in the last frame? No, let's just grab the variable we'd use.
+            // Actually, the main loop calculates 'currentRpm' locally. We can't access it here easily.
+            // For simplicity, we will assume the User saw the 'rpm' state or just save 'rpm' state here.
+            // Better: Store it in stateRef during animate loop if needed, OR just trust 'rpm' state ref?
+            // Actually 'rpm' state is updated in animate. We can read 'rpm' but wait... 'rpm' is state, might be stale in closure?
+            // No, let's use a ref for current RPM to be safe or just re-calc.
+            // Let's use the 'telemetry' approach. Actually, 'rpm' is in state. 
+            // Let's just use the setRpm value. 
+            // To be precise:
+            stateRef.current.shiftPointRPM = rpm;
             setShiftLight(false);
         }
     };
@@ -170,6 +185,7 @@ export default function useRaceEngine({ gameState, onFinish, onRedLight }) {
             running: false,
             shiftLightTime: 0,
             finished: false,
+            shiftPointRPM: 0,
             // Randomize Factors for this run
             tractionFactor: 0.98 + Math.random() * 0.04, // +/- 2%
             dragFactor: 0.95 + Math.random() * 0.10,     // +/- 5% (Affects Trap Speed most)

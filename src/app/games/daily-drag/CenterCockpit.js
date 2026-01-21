@@ -109,7 +109,7 @@ export default function CenterCockpit({ gameState, activeLights = [], telemetry 
                             top: '50%', left: '50%', transform: 'translate(-50%, -50%)'
                         }}></div>
 
-                        <div style={{ position: 'absolute', bottom: '32px', textAlign: 'center' }}>
+                        <div style={{ position: 'absolute', bottom: '12px', textAlign: 'center' }}>
                             <div className="dr-gauge-value">{Math.floor(telemetry.rpm)}</div>
                             <div className="dr-gauge-label">RPM</div>
                         </div>
