@@ -117,7 +117,7 @@ const GrandPrixLeaderboard = ({ initialLeaderboard }) => {
                                     </div>
                                     <div style={styles.driverInfo}>
                                         <div style={styles.driverName}>
-                                            {driver.username || 'Anonymous'}
+                                            {driver.full_name || driver.username || 'Anonymous'}
                                             {driver.grand_prix_wins > 0 && (
                                                 <span title={`${driver.grand_prix_wins} time past Grand Prix winner`} style={styles.trophyIcon}>
                                                     🏆
@@ -254,7 +254,10 @@ const styles = {
     driverName: {
         color: '#1F2937',
         fontWeight: 'bold',
-        fontSize: '0.95rem'
+        fontSize: '0.95rem',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
     },
     driverStats: {
         color: '#9CA3AF',

@@ -496,3 +496,48 @@ input[type=number] {
 
   /* .game-switcher-text display: none; removed */
 }
+
+/* Login Modal Provider Overrides */
+.login-provider-btn {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 5px;
+  background-color: white !important;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  transition: background-color 0.2s !important;
+  /* Override global transition if needed, or keep it */
+}
+
+.login-provider-btn:hover {
+  background-color: #f8f8f8 !important;
+  transform: translateY(-1px);
+  /* Subtle lift */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.login-provider-btn-google {
+  border: 1px solid #dadce0 !important;
+  color: #3c4043;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+
+.login-provider-btn-discord {
+  border: 1px solid #e1e4e8 !important;
+  color: #1925ad;
+}
+
+/* Coming Soon Buttons */
+.login-provider-btn-disabled {
+  background-color: #333 !important;
+  /* Use dark bg for disabled/coming soon to match modal theme better? Or keep colored but dim? */
+  /* User previous code had specific colors. Let's stick to inline for those as they worked (?) or maybe they broke too? */
+  /* The global button disabled style is: background: #555 !important; */
+  /* So we probably don't need to fight too hard for the 'coming soon' ones unless we want specific branding colors. */
+  /* Let's ignore disabled ones for now as user just asked for Google/Discord white bg fixes. */
+}
