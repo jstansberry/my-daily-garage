@@ -148,6 +148,21 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const loginWithDiscord = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'discord',
+                options: {
+                    redirectTo: window.location.origin,
+                }
+            });
+            if (error) throw error;
+        } catch (error) {
+            console.error("Discord Login Error:", error);
+            alert("Login failed");
+        }
+    };
+
     const logout = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) throw error;
@@ -179,6 +194,7 @@ export const AuthProvider = ({ children }) => {
         profile,
         isAdmin: profile?.is_admin || false,
         loginWithGoogle,
+        loginWithDiscord,
         logout,
         loading,
         profileLoaded,
